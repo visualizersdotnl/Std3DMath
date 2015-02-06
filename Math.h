@@ -50,17 +50,13 @@ inline const T lerpf(const T &A, const T &B, float C)
 	return A*(1.f-C) + B*C;
 }
 
-// Smooth step.
-template<typename T>
-float smoothstepf(const T &A, const T&B, float C)
+// Smooth step, Ken Perlin's take on it.
+// Source: http://en.wikipedia.org/wiki/Smoothstep
+float smoothstepf(float A, float B, float X)
 {
-    // Scale, bias and saturate x to 0..1 range
-    x = clamp((x - edge0)/(edge1 - edge0), 0.0, 1.0); 
-    // Evaluate polynomial
-    return x*x*(3 - 2*x);
+	X = clampf((X-A)/(B-A), 0.f, 1.f);
+	return X*X*X*(X*(X*6.f - 15.f) + 10.f);
 }
-
-
 
 #include "Vector2.h"
 #include "Vector3.h"
