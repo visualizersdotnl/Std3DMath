@@ -38,18 +38,14 @@ public:
 		*this = Normalized();
 	}
 
-	void Conjugate()
+	const Quaternion Conjugate() const
 	{
-		// Invert imaginary part.
-		V *= -1.f;
+		return Quaternion(Vector4(V.x*-1.f, V.y*-1.f, V.z*-1.f, V.w));
 	}
 
 	const Quaternion Inverse() const
 	{
-		Quaternion quaternion = *this;
-		quaternion.V.Normalized();
-		quaternion.Conjugate();
-		return quaternion;
+		return Normalized().Conjugate();
 	}
 
 	// Your silver bullet for gimbal-lock free interpolation between rotations.
