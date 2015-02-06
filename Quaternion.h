@@ -33,6 +33,11 @@ public:
 		return Quaternion(V.Normalized());
 	}
 
+	void Normalize()
+	{
+		*this = Normalized();
+	}
+
 	void Conjugate()
 	{
 		// Invert imaginary part.
