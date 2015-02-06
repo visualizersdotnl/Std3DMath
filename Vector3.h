@@ -102,6 +102,25 @@ public:
 		return *this - normal*R;
 	}
 
+	// Refraction according to Snell's law.
+	// Note that 'etaRatio' is the ratio between both surface refraction indices.
+	const Vector3 Refract(const Vector3 &direction, const Vector3 &normal, float etaRatio)
+	{
+		const float dirCos = Dot(direction*-1.f, normal);
+		const float cosT2 = 1.f - etaRatio*etaRatio*(1.f - dirCos*dirCos); 
+		const Vector3 refracted = direction*etaRatio + normal*(etaRatio*dirCos - sqrtf(fabsf(cosT2)));
+		return refracted * std::max<float>(0.f, cosT2);
+	}
+
+	// A few basic refraction indices.
+	// Defined in Vector3.cpp
+	static const float kRefractVacuum;
+	static const float kRefractAir;
+	static const float kRefractWater;	
+	static const float kRefractGlass;
+	static const float kRefractPlastic;
+	static const float kRefractDiamond;
+
 	const Vector3 Perpendicular(const Vector3 &B) const
 	{
 		return Cross(*this, B);
