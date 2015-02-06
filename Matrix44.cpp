@@ -66,7 +66,7 @@
 
 /* static */ const Matrix44 Matrix44::RotationAxis(const Vector3 &axis, float angle)
 {
-	const Vector3 unitAxis = axis.Normalize();
+	const Vector3 unitAxis = axis.Normalized();
 
 	angle *= 0.5f;
 	const Vector4 Quat(unitAxis*sinf(angle), cosf(angle));
@@ -89,11 +89,29 @@
 	return matrix;
 }
 
+/* static */ const Matrix44 Matrix44::FromQuaternion(const Quaternion &quaternion)
+{
+	ASSERT(true == comparef(1.f, quaternion.Length()));
+	const Quaternion Q = quaternion.Normalized();
+
+	Matrix44 matrix = Identity();
+	matrix.rows[0].x = 1.f - 2.f * (Q.V.y*Q.V.y + Q.V.z*Q.V.z);
+	matrix.rows[0].y = 2.f * (Q.V.x*Q.V.y + Q.V.z*Q.V.w);
+	matrix.rows[0].z = 2.f * (Q.V.x*Q.V.z - Q.V.y*Q.V.w);
+	matrix.rows[1].x = 2.f * (Q.V.x*Q.V.y - Q.V.z*Q.V.w);
+	matrix.rows[1].y = 1.f - 2.f*(Q.V.x*Q.V.x + Q.V.z*Q.V.z);
+	matrix.rows[1].z = 2.f * (Q.V.y*Q.V.z + Q.V.x*Q.V.w);
+	matrix.rows[2].x = 2.f * (Q.V.x*Q.V.z + Q.V.y*Q.V.w);
+	matrix.rows[2].y = 2.f * (Q.V.y*Q.V.z - Q.V.x*Q.V.w);
+	matrix.rows[2].z = 1.f - 2.f *(Q.V.x*Q.V.x + Q.V.y*Q.V.y);
+	return matrix;
+}
+
 /* static */ const Matrix44 Matrix44::View(const Vector3 &from, const Vector3 &to, const Vector3 &up)
 {
 	ASSERT(true == comparef(1.f, up.Length()));
-	const Vector3 zAxis = (to-from).Normalize();
-	const Vector3 xAxis = (up % zAxis).Normalize();	
+	const Vector3 zAxis = (to-from).Normalized();
+	const Vector3 xAxis = (up % zAxis).Normalized();	
 	const Vector3 yAxis = zAxis % xAxis;
 
 	Matrix44 matrix;

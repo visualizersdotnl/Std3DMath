@@ -18,6 +18,7 @@ public:
 	static const Matrix44 RotationZ(float angle);
 	static const Matrix44 RotationYawPitchRoll(float yaw, float pitch, float roll); // (*)
 	static const Matrix44 RotationAxis(const Vector3 &axis, float angle);
+	static const Matrix44 FromQuaternion(const Quaternion &quaternion);
 	static const Matrix44 View(const Vector3 &from, const Vector3 &to, const Vector3 &up);
 	static const Matrix44 Perspective(float yFOV, float aspectRatio, float zNear = 0.1f, float zFar = 10000.f);
 	static const Matrix44 Orthographic(const Vector2 &topLeft, const Vector2 &bottomRight, float zNear, float zFar);

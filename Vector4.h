@@ -47,6 +47,7 @@ public:
 	const Vector4 operator +(float B)          const { return Add(*this, Vector4(B)); }
 	const Vector4 operator -(const Vector4 &B) const { return Sub(*this, B); }
 	const Vector4 operator -(float B)          const { return Sub(*this, Vector4(B)); }
+	const float   operator *(const Vector4 &B) const { return Dot(*this, B); }
 	const Vector4 operator *(float B)          const { return Mul(*this, Vector4(B)); }
 	const Vector4 operator /(const Vector4 &B) const { return Div(*this, B); }
 	const Vector4 operator /(float B)          const { return Div(*this, Vector4(B)); }
@@ -79,10 +80,16 @@ public:
 		return sqrtf(Dot(*this, *this));
 	}
 	
-	const Vector4 Normalize() const
+	const Vector4 Normalized() const
 	{
 		return *this * 1.f/Length();
 	}
+
+	void Normalize()
+	{
+		*this *= 1.f/Length();
+	}
+
 
 	// Chiefly meant for constant vector uploads and the likes.
 	const float *GetData() const { return &x; }

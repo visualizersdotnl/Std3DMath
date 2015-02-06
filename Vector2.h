@@ -69,9 +69,14 @@ public:
 		return sqrtf(Dot(*this, *this));
 	}
 	
-	const Vector2 Normalize() const
+	const Vector2 Normalized() const
 	{
 		return *this * 1.f/Length();
+	}
+
+	void Normalize()
+	{
+		*this *= 1.f/Length();
 	}
 
 	float Angle(const Vector2 &B) const
