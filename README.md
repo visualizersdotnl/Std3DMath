@@ -10,4 +10,3 @@ Notes:
 - Please supply your own ASSERT macro (see Dependencies.h).
 - Resides in the global namespace; change if necessary.
 - All angles are in radians unless expliticly stated otherwise.
-- Apply SIMD intrinsics (directly or through library) for anything that needs specific optimization.
