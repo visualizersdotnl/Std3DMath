@@ -1,6 +1,5 @@
 
-#include "../Platform.h"
-// #include "Quaternion.h"
+#include "Math.h"
 
 /* static */ const Quaternion Quaternion::RotationAxisAngle(const Vector3 &axis, float angle)
 {
@@ -47,5 +46,5 @@ const Quaternion Quaternion::Slerp(const Quaternion &B, float lambda)
 	const float coEff1 = sinRevLT/sinT;
 	const float coEff2 = sinLT/sinT;
 
-	return Quaternion((Vector4(V)*coEff1 + Vector4(B.V)*coEff2).Normalized());
+	return Quaternion(V*coEff1 + Vector4(B.V)*coEff2).Normalized();
 }

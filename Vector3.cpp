@@ -1,6 +1,5 @@
 
-#include "../Platform.h"
-// #include "Vector3.h"
+#include "Math.h"
 
 /* static */ const float Vector3::kRefractVacuum = 0.f;
 /* static */ const float Vector3::kRefractAir = 1.0003f;

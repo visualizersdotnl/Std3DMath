@@ -1,7 +1,13 @@
 # Std3DMath
-A few standard C++ math primitives for 3D rendering.
 
-Relies on a few basics through headers belonging to a larger project.
-Shouldn't be any hassle to replace in about half a minute.
+Standard C++ math primitives for 3D rendering.
+(c) visualizers.nl
 
-Will be updated.
+Use these whenever specific (SIMD) optimization is not necessary and ease of use is favored.
+So, about 90% of your calculations if not more.
+
+Notes:
+- Please supply your own ASSERT macro (see Dependencies.h).
+- Resides in the global namespace; change if necessary.
+- All angles are in radians unless expliticly stated otherwise.
+- Apply SIMD intrinsics (directly or through library) for anything that needs specific optimization.

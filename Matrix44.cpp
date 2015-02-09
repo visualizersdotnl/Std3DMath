@@ -1,6 +1,5 @@
 
-#include "../Platform.h"
-// #include "Matrix44.h"
+#include "Math.h"
 
 /* static */ const Matrix44 Matrix44::Identity()
 {
