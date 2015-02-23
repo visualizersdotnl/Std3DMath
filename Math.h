@@ -53,7 +53,7 @@ inline const T lerpf(const T &A, const T &B, float factor)
 
 // Ken Perlin's take on Smoothstep.
 // Source: http://en.wikipedia.org/wiki/Smoothstep
-float smoothstepf(float A, float B, float X)
+inline float smoothstepf(float A, float B, float X)
 {
 	X = clampf((X-A)/(B-A), 0.f, 1.f);
 	return X*X*X*(X*(X*6.f - 15.f) + 10.f);

@@ -16,7 +16,7 @@ public:
 	static const Quaternion RotationAxisAngle(const Vector3 &axis, float angle);
 
 	Quaternion() : V(0.f, 0.f, 0.f, 1.f) {} // Initialize as stationary unit.
-	~Quaternion();
+	~Quaternion() {}
 
 	explicit Quaternion(const Vector4 &V) : V(V) 
 	{ 
