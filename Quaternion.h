@@ -19,8 +19,7 @@ public:
 	~Quaternion() {}
 
 	explicit Quaternion(const Vector4 &V) : V(V) 
-	{ 
-		ASSERT(true == comparef(1.f, V.Length())); 
+	{
 	}
 
 	float Length() const
@@ -40,7 +39,7 @@ public:
 
 	const Quaternion Conjugate() const
 	{
-		return Quaternion(Vector4(V.x*-1.f, V.y*-1.f, V.z*-1.f, V.w));
+		return Quaternion(Vector4(-V.x, -V.y, -V.z, V.w));
 	}
 
 	const Quaternion Inverse() const

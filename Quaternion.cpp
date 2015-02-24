@@ -3,9 +3,8 @@
 
 /* static */ const Quaternion Quaternion::RotationAxisAngle(const Vector3 &axis, float angle)
 {
-	// Opting for both an assertion and Normalize() here.
- 	ASSERT(true == comparef(1.f, axis.Length()));
 	const Vector3 axisNormalized = axis.Normalized();
+	ASSERT(true == comparef(1.f, axisNormalized.Length()));
 
 	angle *= 0.5f;
 
@@ -34,17 +33,25 @@ const Vector3 Quaternion::GetEulerAngles() const
 // Stolen from one of my books. Excuse the half-assed variable names.
 const Quaternion Quaternion::Slerp(const Quaternion &B, float lambda)
 {
-	const float dot = V*B.V;
+	float dot = V*B.V;
 
-	lambda *= 0.5f;
-	const float theta = fabsf(acosf(dot));
+	// If smaller than zero we're more than 90 degrees apart, so we can invert one to reduce spinning.
+	Quaternion _B = B;
+	if (dot < 0.f)
+	{
+		dot = -1.f;
+		_B.V *= -1.f;
+	}
 
-	const float sinT = sinf(theta);
-	const float sinLT = sinf(lambda*theta);
-	const float sinRevLT = sinf((1.f-lambda) * theta);
-
-	const float coEff1 = sinRevLT/sinT;
-	const float coEff2 = sinLT/sinT;
-
-	return Quaternion(V*coEff1 + Vector4(B.V)*coEff2).Normalized();
+	if (dot < 0.95f)
+	{
+		// Spherical.
+		const float angle = acosf(dot);
+		return Quaternion((V*sinf(angle*(1.f-lambda)) + _B.V*sinf(angle*lambda)) / sinf(angle));
+	}
+	else
+	{
+		// Linear (small angle);
+		return Quaternion(lerpf<Vector4>(V, _B.V, lambda));
+	}
 }
