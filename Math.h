@@ -46,17 +46,17 @@ inline float saturatef(float value)
 
 // Linear interpolate by scalar factor.
 template<typename T>
-inline const T lerpf(const T &A, const T &B, float factor)
+inline const T lerpf(const T &A, const T &B, float T)
 {
-	return A*(1.f-factor) + B*factor;
+	return A*(1.f-T) + B*T;
 }
 
 // Ken Perlin's take on Smoothstep.
 // Source: http://en.wikipedia.org/wiki/Smoothstep
-inline float smoothstepf(float A, float B, float X)
+inline float smoothstepf(float A, float B, float T)
 {
-	X = clampf((X-A)/(B-A), 0.f, 1.f);
-	return X*X*X*(X*(X*6.f - 15.f) + 10.f);
+	const float X = saturatef(T);
+	return lerpf<float>(A, B, X*X*X * (X*(X*6.f - 15.f) + 10.f));
 }
 
 #include "Vector2.h"
