@@ -1,9 +1,8 @@
 
 /*
-	A few notes on this particular implementation:
+	About this particular implementation:
+	- It's single goal is to provide gimbal lock free interpolation of rotation.
 	- Multiplying quaternions is not commutative, ergo, A*B does not equal B*A.
-	- The main reason these exist in this library is for gimbal-lock free interpolation, or "slerp", useful in about any 3D scene player.
-	- I'm keeping this object rather minimal and strict so as to prevent any error through assumption.
 */
 
 #pragma once
