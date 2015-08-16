@@ -168,7 +168,7 @@ const Matrix44 Matrix44::Transpose() const
 
 const Matrix44 Matrix44::Multiply(const Matrix44 &B) const
 {
-	Matrix44 matrix;	
+	Matrix44 matrix;
 	matrix.rows[0].x = rows[0].x*B.rows[0].x + rows[0].y*B.rows[1].x + rows[0].z*B.rows[2].x + rows[0].w*B.rows[3].x;
 	matrix.rows[0].y = rows[0].x*B.rows[0].y + rows[0].y*B.rows[1].y + rows[0].z*B.rows[2].y + rows[0].w*B.rows[3].y;
 	matrix.rows[0].z = rows[0].x*B.rows[0].z + rows[0].y*B.rows[1].z + rows[0].z*B.rows[2].z + rows[0].w*B.rows[3].z;
@@ -205,7 +205,7 @@ const Vector4 Matrix44::Transform4(const Vector4 &B) const
 		rows[3]*B);
 }
 
-const Matrix44 Matrix44::AffineInverse() const
+const Matrix44 Matrix44::OrthoInverse() const
 {
 	Matrix44 matrix;
 	matrix.rows[0] = Vector4(rows[0].x, rows[1].x, rows[2].x, -rows[0].w);

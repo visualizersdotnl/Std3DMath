@@ -1,6 +1,9 @@
 
 /*
-	Row-major 4x4 matrix (LH).
+	Row-major 4x4 matrix (left-handed).
+
+	To-do:
+	- General inverse.
 */
 
 #pragma once
@@ -34,7 +37,7 @@ public:
 	const Matrix44 Multiply(const Matrix44 &B) const;
 	const Vector3  Transform3(const Vector3 &B) const;
 	const Vector4  Transform4(const Vector4 &B) const;
-	const Matrix44 AffineInverse() const;
+	const Matrix44 OrthoInverse() const;
 
 	void SetTranslation(const Vector3 &V);
 	
