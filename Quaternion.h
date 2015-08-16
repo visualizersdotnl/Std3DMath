@@ -1,44 +1,42 @@
 
 /*
-	About this particular implementation:
-	- It's single goal is to provide gimbal lock free interpolation of rotation.
-	- Multiplying quaternions is not commutative, ergo, A*B does not equal B*A.
-*/
+	Basic (unit) quaternion implementation to describe & manipulate 3D rotation.
 
+	- It's primary use, of course, is gimbal lock free interpolation with Slerp().
+	- Multiplying quaternions (or rotations) isn't commutative, ergo A*B != B*A.
+	- Vector4's operator overloads are *not* directly accessible (due to redefinitions).
+	  For now, just use functions like Vector4::Dot() or cast.
+
+	Needs features:
+	- Create from Euler angles.
+	- Create from matrix.
+	- Maybe deriving from Vector4 wasn't the brightest plan.
+*/
+ 
 #pragma once
 
-class Quaternion
+class Quaternion : public Vector4
 {
 public:
-	Vector4 V;
+	static const Quaternion Identity();
+	static const Quaternion AxisAngle(const Vector3 &axis, float angle);
+	static const Quaternion Slerp(const Quaternion &from, const Quaternion &to, float T);
 
-	static const Quaternion RotationAxisAngle(const Vector3 &axis, float angle);
-
-	Quaternion() : V(0.f, 0.f, 0.f, 1.f) {} // Initialize as stationary unit.
+	Quaternion() {} 
 	~Quaternion() {}
 
-	explicit Quaternion(const Vector4 &V) : V(V) 
-	{
-	}
-
-	float Length() const
-	{
-		return V.Length();
-	}
+	explicit Quaternion(const Vector4 &V) : Vector4(V) {}
 
 	const Quaternion Normalized() const
 	{
-		return Quaternion(V.Normalized());
-	}
-
-	void Normalize()
-	{
-		*this = Normalized();
+		Quaternion normalized = *this;
+		normalized.Normalize();
+		return normalized;
 	}
 
 	const Quaternion Conjugate() const
 	{
-		return Quaternion(Vector4(-V.x, -V.y, -V.z, V.w));
+		return Quaternion(Vector4(-x, -y, -z, w));
 	}
 
 	const Quaternion Inverse() const
@@ -46,23 +44,17 @@ public:
 		return Normalized().Conjugate();
 	}
 
-	// Your silver bullet for gimbal-lock free interpolation between rotations.
-	const Quaternion Slerp(const Quaternion &B, float lambda);
-
 	const Quaternion operator *(const Quaternion &B) const
 	{
-		Quaternion quaternion;
-		quaternion.V.x = B.V.w*V.x + B.V.x*V.w + B.V.y*V.z - B.V.z*V.y;
-		quaternion.V.y = B.V.w*V.y - B.V.x*V.z + B.V.y*V.w + B.V.z*V.x;
-		quaternion.V.z = B.V.w*V.z + B.V.x*V.y - B.V.y*V.x + B.V.z*V.w;
-		quaternion.V.w = B.V.w*V.w - B.V.x*V.x - B.V.y*V.y - B.V.z*V.z;
-		return quaternion;		
+		return Quaternion(Vector4(
+			 x*B.w + y*B.z - z*B.y + w*B.x,
+			-x*B.z + y*B.w + z*B.x + w*B.y,
+			 x*B.y - y*B.x + z*B.w + w*B.z,
+			-x*B.x - y*B.y - z*B.z + w*B.w));
 	}
 
 	Quaternion& operator *=(const Quaternion &B)
 	{
 		*this = *this * B;
 	}
-
-	const Vector3 Quaternion::GetEulerAngles() const;
 };

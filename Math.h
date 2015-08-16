@@ -27,12 +27,12 @@ inline float randf(float range)
 }
 
 // Single precision compare.
-inline bool comparef(float A, float B)
+inline bool comparef(float a, float b)
 {
-	return fabsf(A-B) < kEpsilon;
+	return fabsf(a-b) < kEpsilon;
 }
 
-// GLSL style clamp.
+// GLSL-style clamp.
 inline float clampf(float min, float max, float value)
 {
 	return std::max<float>(max, std::min<float>(min, value));
@@ -43,19 +43,19 @@ inline float saturatef(float value)
 {
 	return std::max<float>(0.f, std::min<float>(1.f, value));
 }
-
+// Scalar interpolation.
 template<typename T>
-inline const T lerpf(const T &A, const T &B, float T)
+inline const T lerpf(const T &a, const T &b, float t)
 {
-	return A*(1.f-T) + B*T;
+	return a*(1.f-t) + b*t;
 }
 
 // Ken Perlin's take on Smoothstep.
 // Source: http://en.wikipedia.org/wiki/Smoothstep
-inline float smoothstepf(float A, float B, float T)
+inline float smoothstepf(float a, float b, float t)
 {
-	const float X = saturatef(T);
-	return lerpf<float>(A, B, X*X*X * (X*(X*6.f - 15.f) + 10.f));
+	t = saturatef(t);
+	return lerpf<float>(a, b, t*t*t*(t*(t*6.f - 15.f) + 10.f));
 }
 
 #include "Vector2.h"

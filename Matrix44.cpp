@@ -88,27 +88,32 @@
 	return matrix;
 }
 
-/* static */ const Matrix44 Matrix44::FromQuaternion(const Quaternion &quaternion)
+/* static */ const Matrix44 Matrix44::Rotation(const Quaternion &quaternion)
 {
-	ASSERT(true == comparef(1.f, quaternion.Length()));
-	const Quaternion Q = quaternion.Normalized();
+	// Quaternions *should* be unit!
+	const Quaternion unit = quaternion.Normalized();
 
-	Matrix44 matrix = Identity();
-	matrix.rows[0].x = 1.f - 2.f * (Q.V.y*Q.V.y + Q.V.z*Q.V.z);
-	matrix.rows[0].y = 2.f * (Q.V.x*Q.V.y + Q.V.z*Q.V.w);
-	matrix.rows[0].z = 2.f * (Q.V.x*Q.V.z - Q.V.y*Q.V.w);
-	matrix.rows[1].x = 2.f * (Q.V.x*Q.V.y - Q.V.z*Q.V.w);
-	matrix.rows[1].y = 1.f - 2.f*(Q.V.x*Q.V.x + Q.V.z*Q.V.z);
-	matrix.rows[1].z = 2.f * (Q.V.y*Q.V.z + Q.V.x*Q.V.w);
-	matrix.rows[2].x = 2.f * (Q.V.x*Q.V.z + Q.V.y*Q.V.w);
-	matrix.rows[2].y = 2.f * (Q.V.y*Q.V.z - Q.V.x*Q.V.w);
-	matrix.rows[2].z = 1.f - 2.f *(Q.V.x*Q.V.x + Q.V.y*Q.V.y);
+	const float XX = unit.x*unit.x;
+	const float YY = unit.y*unit.y;
+	const float ZZ = unit.z*unit.z;
+	const float XY = unit.x*unit.y;
+	const float XZ = unit.x*unit.z;
+	const float YZ = unit.y*unit.z;
+	const float XW = unit.x*unit.w;
+	const float YW = unit.y*unit.w;
+	const float ZW = unit.z*unit.w;
+
+	Matrix44 matrix;
+	matrix.rows[0] = Vector4(1.f - 2.f*(YY+ZZ),       2.f*(XY+ZW),       2.f*(XZ-YW), 0.f);
+	matrix.rows[1] = Vector4(      2.f*(XY-ZW), 1.f - 2.f*(XX+ZZ),       2.f*(YZ+XW), 0.f);
+	matrix.rows[2] = Vector4(      2.f*(XZ+YW),       2.f*(YZ-XW), 1.f - 2.f*(XX+YY), 0.f);
+	matrix.rows[3] = Vector4(              0.f,               0.f,               0.f, 1.f);
 	return matrix;
 }
 
 /* static */ const Matrix44 Matrix44::View(const Vector3 &from, const Vector3 &to, const Vector3 &up)
 {
-	ASSERT(true == comparef(1.f, up.Length()));
+	assert(true == comparef(1.f, up.Length()));
 	const Vector3 zAxis = (to-from).Normalized();
 	const Vector3 xAxis = (up % zAxis).Normalized();	
 	const Vector3 yAxis = zAxis % xAxis;
@@ -189,6 +194,15 @@ const Vector3 Matrix44::Transform3(const Vector3 &B) const
 		rows[0].x*B.x + rows[0].y*B.y + rows[0].z*B.z + rows[0].w,
 		rows[1].x*B.x + rows[1].y*B.y + rows[1].z*B.z + rows[1].w,
 		rows[2].x*B.x + rows[2].y*B.y + rows[2].z*B.z + rows[2].w);
+}
+
+const Vector4 Matrix44::Transform4(const Vector4 &B) const
+{
+	return Vector4(
+		rows[0]*B,
+		rows[1]*B,
+		rows[2]*B,
+		rows[3]*B);
 }
 
 const Matrix44 Matrix44::AffineInverse() const

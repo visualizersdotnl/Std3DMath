@@ -8,7 +8,7 @@
 
 class Vector4
 {
-private:
+public:
 	static const Vector4 Add(const Vector4 &A, const Vector4 &B) { return Vector4(A.x+B.x, A.y+B.y, A.z+B.z, A.w+B.w); }
 	static const Vector4 Sub(const Vector4 &A, const Vector4 &B) { return Vector4(A.x-B.x, A.y-B.y, A.z-B.z, A.w-B.w); }
 	static const Vector4 Mul(const Vector4 &A, const Vector4 &B) { return Vector4(A.x*B.x, A.y*B.y, A.z*B.z, A.w*B.w); }
@@ -91,6 +91,6 @@ public:
 	}
 
 
-	// Chiefly meant for constant vector uploads and the likes.
+	// Chiefly intended for constant uploads.
 	const float *GetData() const { return &x; }
 };

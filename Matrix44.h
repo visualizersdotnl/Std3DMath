@@ -18,27 +18,29 @@ public:
 	static const Matrix44 RotationZ(float angle);
 	static const Matrix44 RotationYawPitchRoll(float yaw, float pitch, float roll); // (*)
 	static const Matrix44 RotationAxis(const Vector3 &axis, float angle);
-	static const Matrix44 FromQuaternion(const Quaternion &quaternion);
+	static const Matrix44 Rotation(const Quaternion &quaternion);
 	static const Matrix44 View(const Vector3 &from, const Vector3 &to, const Vector3 &up);
 	static const Matrix44 Perspective(float yFOV, float aspectRatio, float zNear = 0.1f, float zFar = 10000.f);
 	static const Matrix44 Orthographic(const Vector2 &topLeft, const Vector2 &bottomRight, float zNear, float zFar);
 	static const Matrix44 FromArray(const float floats[16]);
 
-	// (*) This function is slow and very prone to gimbal lock.
+	// (*) Slow and very prone to gimbal lock.
 	//     Use RotationAxis() or a quaternion instead.
 
 	Matrix44() {}
 	~Matrix44() {}
 	
 	const Matrix44 Transpose() const;
-	const Matrix44 Multiply(const Matrix44 &B) const;		
+	const Matrix44 Multiply(const Matrix44 &B) const;
 	const Vector3  Transform3(const Vector3 &B) const;
+	const Vector4  Transform4(const Vector4 &B) const;
 	const Matrix44 AffineInverse() const;
 
 	void SetTranslation(const Vector3 &V);
 	
 	// V' = M*V
 	const Vector3 operator *(const Vector3 &B) const { return Transform3(B); }
+	const Vector4 operator *(const Vector4 &B) const { return Transform4(B); }
 
 	// M'= M*M
 	const Matrix44 operator *(const Matrix44 &B) const { return Multiply(B); }

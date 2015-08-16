@@ -3,7 +3,7 @@
 
 class Vector2
 {
-private:
+public:
 	static const Vector2 Add(const Vector2 &A, const Vector2 &B) { return Vector2(A.x+B.x, A.y+B.y); }
 	static const Vector2 Sub(const Vector2 &A, const Vector2 &B) { return Vector2(A.x-B.x, A.y-B.y); }
 	static const Vector2 Mul(const Vector2 &A, const Vector2 &B) { return Vector2(A.x*B.x, A.y*B.y); }

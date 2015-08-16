@@ -1,57 +1,35 @@
 
 #include "Math.h"
 
-/* static */ const Quaternion Quaternion::RotationAxisAngle(const Vector3 &axis, float angle)
+/* static */ const Quaternion Quaternion::Identity()
 {
-	const Vector3 axisNormalized = axis.Normalized();
-	ASSERT(true == comparef(1.f, axisNormalized.Length()));
+	return Quaternion(Vector4(0.f, 0.f, 0.f, 1.f));
+}
 
+/* static */ const Quaternion Quaternion::AxisAngle(const Vector3 &axis, float angle)
+{
+	const Vector3 unitAxis = axis.Normalized();
 	angle *= 0.5f;
-
-	Quaternion quaternion(Vector4(
-		axisNormalized.x*sinf(angle),
-		axisNormalized.y*sinf(angle),
-		axisNormalized.z*sinf(angle),
-		cosf(angle)));
-	return quaternion;
+	return Quaternion(Vector4(unitAxis*sinf(angle), cosf(angle)));
 }
 
-const Vector3 Quaternion::GetEulerAngles() const
+/* static */ const Quaternion Quaternion::Slerp(const Quaternion &A, const Quaternion &B, float T)
 {
-	const float _11 = 2.f*(V.x*V.y + V.w*V.z);
-	const float _12 = V.w*V.w + V.x*V.x - V.y*V.y - V.z*V.z;
-	const float _21 = -2.f*(V.x*V.z - V.w*V.y);
-	const float _31 = 2.f*(V.y*V.z + V.w*V.x);
-	const float _32 = V.w*V.w - V.x*V.x - V.y*V.y + V.z*V.z;
-
-	return Vector3(
-		atan2f(_31, _32),
-		asinf(_21),
-		atan2f(_11, _12));
-}
-
-// Stolen from one of my books. Excuse the half-assed variable names.
-const Quaternion Quaternion::Slerp(const Quaternion &B, float lambda)
-{
-	float dot = V*B.V;
-
-	// If smaller than zero we're more than 90 degrees apart, so we can invert one to reduce spinning.
-	Quaternion _B = B;
-	if (dot < 0.f)
+	float dot = Dot(A, B);
+	if (dot > 0.9995f)
 	{
-		dot = -1.f;
-		_B.V *= -1.f;
+		// Very small angle: interpolate linearly.
+		return Quaternion(lerpf<Vector4>(A, B, T).Normalized());
 	}
 
-	if (dot < 0.95f)
-	{
-		// Spherical.
-		const float angle = acosf(dot);
-		return Quaternion((V*sinf(angle*(1.f-lambda)) + _B.V*sinf(angle*lambda)) / sinf(angle));
-	}
-	else
-	{
-		// Linear (small angle);
-		return Quaternion(lerpf<Vector4>(V, _B.V, lambda));
-	}
+	// Clamp to acos() domain.
+	dot = clampf(-1.f, 1.f, dot);
+
+	float theta = acosf(dot);
+	float phi = theta*T;
+
+	// Orthonormal basis.
+	Vector4 basis = (B - Scale(A, dot)).Normalized();
+
+	return Quaternion(Scale(A, cosf(theta)) + basis*sinf(theta));
 }

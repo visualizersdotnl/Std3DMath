@@ -3,7 +3,7 @@
 
 class Vector3
 {
-private:
+public:
 	static const Vector3 Add(const Vector3 &A, const Vector3 &B) { return Vector3(A.x+B.x, A.y+B.y, A.z+B.z); }
 	static const Vector3 Sub(const Vector3 &A, const Vector3 &B) { return Vector3(A.x-B.x, A.y-B.y, A.z-B.z); }
 	static const Vector3 Mul(const Vector3 &A, const Vector3 &B) { return Vector3(A.x*B.x, A.y*B.y, A.z*B.z); }
@@ -119,7 +119,6 @@ public:
 	}
 
 	// A few basic refraction indices.
-	// Defined in Vector3.cpp
 	static const float kRefractVacuum;
 	static const float kRefractAir;
 	static const float kRefractWater;	
