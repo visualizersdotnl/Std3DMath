@@ -2,10 +2,7 @@
 
 Standard C++ math primitives for 3D rendering.
 
-Use these whenever specific (SIMD) optimization is not necessary and ease of use is favored.
-So, about 90% of your calculations if not more.
-
-Notes:
+- By no means a complete set. Functionality added as needed.
+- No specific (SIMD) optimizations.
 - Resides in the global namespace; change if necessary.
 - All angles are in radians unless expliticly stated otherwise.
-
