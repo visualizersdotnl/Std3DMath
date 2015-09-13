@@ -1,9 +1,7 @@
 
 /*
 	Standard C++ math primitives for 3D rendering.
-	
 	(c) visualizers.nl
-	License: MIT (see LICENSE)
 
 	Please check README.md for more information.
 */

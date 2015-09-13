@@ -1,7 +1,6 @@
 
 /*
-	Vector4 implementation is rather limited, mostly because it often does not serve as much more than 
-	a container for shader constants, axis-angle pairs or a quaternion.
+	4D (homogenous) vector.
 */
 
 #pragma once
@@ -25,7 +24,6 @@ public:
 	}
 
 public:
-	// Components are public since these are not performance primitives.
 	float x, y, z, w;
 
 	Vector4() {}
@@ -72,12 +70,17 @@ public:
 
 	bool operator <(const Vector4 &B) const
 	{
-		return Length() < B.Length();
+		return LengthSq() < B.LengthSq();
+	}
+
+	float LengthSq() const
+	{
+		return Dot(*this, *this);
 	}
 
 	float Length() const
 	{
-		return sqrtf(Dot(*this, *this));
+		return sqrtf(LengthSq());
 	}
 	
 	const Vector4 Normalized() const

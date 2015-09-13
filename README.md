@@ -2,7 +2,7 @@
 
 Standard C++ math primitives for 3D rendering.
 
-- By no means a complete set (I add as needed).
-- No SIMD optimizations (I believe those should be made locally).
+- No SIMD optimizations (I prefer to apply those locally).
+- Not very complete nor intended to be; I add & refactor by demand.
 - Resides in global namespace (change if necessary).
-- All angles are in radians unless expliticly stated otherwise.
+- All angles are in radians (unless explicitly stated otherwise).

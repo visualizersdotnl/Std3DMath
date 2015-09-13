@@ -1,4 +1,8 @@
 
+/*
+	3D vector.
+*/
+
 #pragma once
 
 class Vector3
@@ -28,7 +32,6 @@ public:
 	}
 
 public:
-	// Components are public since these are not performance primitives.
 	float x, y, z;
 
 	Vector3() {}
@@ -73,7 +76,12 @@ public:
 
 	bool operator <(const Vector3 &B) const
 	{
-		return Length() < B.Length();
+		return LengthSq() < B.LengthSq();
+	}
+
+	float LengthSq() const 
+	{ 
+		return Dot(*this, *this); 
 	}
 
 	float Length() const

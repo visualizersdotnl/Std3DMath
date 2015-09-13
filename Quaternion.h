@@ -7,7 +7,7 @@
 	- Vector4's operator overloads are *not* directly accessible (due to redefinitions).
 	  For now, just use functions like Vector4::Dot() or cast.
 
-	Needs features:
+	To do:
 	- Create from Euler angles.
 	- Create from matrix.
 	- Maybe deriving from Vector4 wasn't the brightest plan.
@@ -22,7 +22,7 @@ public:
 	static const Quaternion AxisAngle(const Vector3 &axis, float angle);
 	static const Quaternion Slerp(const Quaternion &from, const Quaternion &to, float T);
 
-	Quaternion() {} 
+public:
 	~Quaternion() {}
 
 	explicit Quaternion(const Vector4 &V) : Vector4(V) {}
@@ -55,6 +55,10 @@ public:
 
 	Quaternion& operator *=(const Quaternion &B)
 	{
-		*this = *this * B;
+		return *this = *this * B;
 	}
+
+private:
+	// You can't have an uninitialized quaternion.
+	Quaternion() {}
 };
