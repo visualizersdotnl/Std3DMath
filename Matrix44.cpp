@@ -28,9 +28,10 @@
 	return matrix;
 }
 
-/* static */ const Matrix44 Matrix44::Rotation(const Quaternion &quaternion)
+/* static */ const Matrix44 Matrix44::Rotation(const Quaternion &rotation)
 {
-	const Quaternion unit = quaternion.Normalized();
+	// Should already be a unit quaternion!																																																																																						;;;;
+	const Quaternion unit = rotation.Normalized();
 
 	const float XX = unit.x*unit.x;
 	const float YY = unit.y*unit.y;
@@ -97,15 +98,20 @@
 /* static */ const Matrix44 Matrix44::View(const Vector3 &from, const Vector3 &to, const Vector3 &up)
 {
 	assert(true == comparef(1.f, up.Length()));
+
+	// Derive orthonormal basis.
 	const Vector3 zAxis = (to-from).Normalized();
 	const Vector3 xAxis = (up % zAxis).Normalized();	
 	const Vector3 yAxis = zAxis % xAxis;
 
+	// Invert & rotate translation.
+	const Vector3 eye(-(xAxis*from), -(yAxis*from), -(zAxis*from));
+
 	Matrix44 matrix;
-	matrix.rows[0] = Vector4(xAxis, -(xAxis*from));
-	matrix.rows[1] = Vector4(yAxis, -(yAxis*from));
-	matrix.rows[2] = Vector4(zAxis, -(zAxis*from));
-	matrix.rows[3] = Vector4(0.f, 0.f, 0.f, 1.f);
+	matrix.rows[0] = Vector4(xAxis.x, yAxis.x, zAxis.x, 0.f);
+	matrix.rows[1] = Vector4(xAxis.y, yAxis.y, zAxis.y, 0.f);
+	matrix.rows[2] = Vector4(xAxis.z, yAxis.z, zAxis.z, 0.f);
+	matrix.rows[3] = Vector4(  eye.x,   eye.y,   eye.z, 1.f);
 	return matrix;
 }
 
@@ -117,10 +123,10 @@
 	const float zTrans = -zNear*zFar / zRange;
 
 	Matrix44 matrix;
-	matrix.rows[0] = Vector4(xScale,     0.f,        0.f,    0.f);
-	matrix.rows[1] = Vector4(   0.f, yScale,         0.f,    0.f);
-	matrix.rows[2] = Vector4(   0.f,    0.f, zFar/zRange, zTrans);
-	matrix.rows[3] = Vector4(   0.f,    0.f,         1.f,    0.f);
+	matrix.rows[0] = Vector4(xScale,     0.f,        0.f, 0.f);
+	matrix.rows[1] = Vector4(   0.f, yScale,         0.f, 0.f);
+	matrix.rows[2] = Vector4(   0.f,    0.f, zFar/zRange, 0.f);
+	matrix.rows[3] = Vector4(   0.f,    0.f,      zTrans, 0.f);
 	return matrix;
 }
 
@@ -134,12 +140,12 @@
 	const float zScale = 2.f/zRange;
 	const float zTrans = -(zFar+zNear)/zRange;
 
-    Matrix44 matrix;
-    matrix.rows[0] = Vector4(xScale,    0.f,     0.f, xTrans);
-    matrix.rows[1] = Vector4(   0.f, yScale,     0.f, yTrans);
-    matrix.rows[2] = Vector4(   0.f,     0.f, zScale, zTrans);
-    matrix.rows[3] = Vector4(   0.f,     0.f,    0.f,    1.f);
-    return matrix;
+	Matrix44 matrix;
+	matrix.rows[0] = Vector4(xScale,    0.f,    0.f, 0.f);
+	matrix.rows[1] = Vector4(   0.f, yScale,    0.f, 0.f);
+	matrix.rows[2] = Vector4(   0.f,    0.f, zScale, 0.f);
+	matrix.rows[3] = Vector4(xTrans, yTrans, zTrans, 1.f);
+	return matrix;
 }
 
 /* static */ const Matrix44 Matrix44::FromArray(const float floats[16])
@@ -147,6 +153,13 @@
 	Matrix44 matrix;
 	memcpy(&matrix.rows[0], floats, 16*sizeof(float));
 	return matrix;
+}
+
+void Matrix44::SetTranslation(const Vector3 &V)
+{
+	rows[3].x = V.x;
+	rows[3].y = V.y;
+	rows[3].z = V.z;
 }
 
 const Matrix44 Matrix44::Transpose() const
@@ -187,9 +200,17 @@ const Matrix44 Matrix44::Multiply(const Matrix44 &B) const
 const Vector3 Matrix44::Transform3(const Vector3 &B) const
 {
 	return Vector3(
-		rows[0].x*B.x + rows[0].y*B.y + rows[0].z*B.z + rows[0].w,
-		rows[1].x*B.x + rows[1].y*B.y + rows[1].z*B.z + rows[1].w,
-		rows[2].x*B.x + rows[2].y*B.y + rows[2].z*B.z + rows[2].w);
+		rows[0].x*B.x + rows[1].y*B.x + rows[2].x*B.z,
+		rows[0].y*B.x + rows[1].y*B.y + rows[2].y*B.z,
+		rows[0].z*B.x + rows[1].y*B.z + rows[2].z*B.z);
+}
+
+const Vector3 Matrix44::Transform4(const Vector3 &B) const
+{
+	return Vector3(
+		rows[0].x*B.x + rows[1].y*B.x + rows[2].x*B.z + rows[3].x,
+		rows[0].y*B.x + rows[1].y*B.y + rows[2].y*B.z + rows[3].y,
+		rows[0].z*B.x + rows[1].y*B.z + rows[2].z*B.z + rows[3].z);
 }
 
 const Vector4 Matrix44::Transform4(const Vector4 &B) const
@@ -211,7 +232,7 @@ const Matrix44 Matrix44::OrthoInverse() const
 	matrix.rows[2] = Vector4(rows[0].z, rows[1].z, rows[2].z, 0.f);
 	matrix.rows[3] = Vector4(      0.f,       0.f,       0.f, 1.f);
 
-	// Take inverse translation, rotate it, then store.
+	// Invert translation, rotate it, then store.
 	const Vector3 translation = matrix.Transform3(Vector3(-rows[0].w, -rows[1].w, -rows[2].w));
 	matrix.rows[0].w = translation.x;
 	matrix.rows[1].w = translation.y;
@@ -236,11 +257,4 @@ const Matrix44 Matrix44::GeneralInverse() const
 	// FIXME: implement.
 
 	return matrix;
-}
-
-void Matrix44::SetTranslation(const Vector3 &V)
-{
-	rows[0].w = V.x;
-	rows[1].w = V.y;
-	rows[2].w = V.z;
 }

@@ -1,13 +1,20 @@
 
 /*
-	Row-major 4x4 matrix (left-handed).
+	4x4 matrix.
 
-	** Consider using Quaternion to store & multiply rotation! **
+	Uses column-major layout (translation lives in the bottom-left corner).
+	This model reflects the one used by many 3D APIs.
+	However, row-major is potentially nicer for (SIMD) CPU transforms.
+
+	- Assumes left-handed coordinate system.
+	- Consider using Quaternion for rotations, as it saves memory & cycles.
 
 	To do:
-	- Use float array instead of Vector4, or try a union with a 'float4' type?
+	- Unionize Vector4s with floats.
 	- Implement general and affine inverse.
-	- Add more in-place operations (scale, translate, rotate).
+	- Implement in-place operations (scale, translate, rotate).
+	- In-place operations (translate, rotate, scale).
+	- Optimize; seemingly simple operations may end up being too costly.
 */
 
 #pragma once
@@ -18,7 +25,7 @@ public:
 	static const Matrix44 Identity();
 	static const Matrix44 Scaling(const Vector3 &scale);
 	static const Matrix44 Translation(const Vector3 &translation);
-	static const Matrix44 Rotation(const Quaternion &quaternion);
+	static const Matrix44 Rotation(const Quaternion &rotation);
 	static const Matrix44 RotationX(float angle);
 	static const Matrix44 RotationY(float angle);
 	static const Matrix44 RotationZ(float angle);
@@ -33,14 +40,20 @@ public:
 
 	~Matrix44() {}
 
-//	void Scale(const Vector3 &scale);
-//	void Translate(const Vector3 &translation);
-//	void Rotate(...);
+//	Matrix44& Scale(const Vector3 &scale);
+//	Matrix44& Translate(const Vector3 &translation);
+//	Matrix44& Rotate(...);
+
+	void SetTranslation(const Vector3 &translation);
 	
 	const Matrix44 Transpose() const;
+
+	// - Multiplying matrices isn't commutative, so A*B != B*A.
+	// - Transformation order is left to right.
 	const Matrix44 Multiply(const Matrix44 &B) const;
 
-	const Vector3 Transform3(const Vector3 &B) const;
+	const Vector3 Transform3(const Vector3 &B) const; // Transform w/3x3 part (no translation, for vectors).
+	const Vector3 Transform4(const Vector3 &B) const; // Transform w/3x4 part (points).
 	const Vector4 Transform4(const Vector4 &B) const;
 
 	// Invert orthogonal matrix (euclidian transform; may rotate, translate, reflect).
@@ -50,15 +63,14 @@ public:
 	const Matrix44 AffineInverse() const;
 
 	// General inverse (prefixed to encourage use of specific inverse).
+	// Rule of thumb: use when bottom row isn't (0, 0, 0, 1).
 	const Matrix44 GeneralInverse() const;
-
-	void SetTranslation(const Vector3 &translation);
 	
-	// V' = M*V
-	const Vector3 operator *(const Vector3 &B) const { return Transform3(B); }
+	// operator: V' = M*V
+	const Vector3 operator *(const Vector3 &B) const { return Transform4(B); }
 	const Vector4 operator *(const Vector4 &B) const { return Transform4(B); }
 
-	// M'= M*M (non-commutative!)
+	// operator: M' = M*M
 	const Matrix44 operator *(const Matrix44 &B) const { return Multiply(B); }
 	Matrix44& operator *=(const Matrix44 &B) { return *this = *this * B; }
 

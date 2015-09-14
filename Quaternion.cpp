@@ -31,5 +31,5 @@
 	// Orthonormal basis.
 	Vector4 basis = (B - Scale(A, dot)).Normalized();
 
-	return Quaternion(Scale(A, cosf(theta)) + basis*sinf(theta));
+	return Quaternion(Vector4::Scale(A, cosf(theta)) + basis*sinf(theta));
 }
