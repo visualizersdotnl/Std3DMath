@@ -8,7 +8,7 @@
 	  For now, just use functions like Vector4::Dot() or cast.
 
 	To do:
-	- Maybe deriving from Vector4 wasn't the brightest plan.
+	- Deriving from Vector4 wasn't the brightest plan: undo this.
 	- Create from Euler angles.
 	- Create from matrix.
 */
@@ -23,6 +23,11 @@ public:
 	static const Quaternion Slerp(const Quaternion &from, const Quaternion &to, float T);
 
 public:
+	Quaternion() 
+	{
+		*this = Identity();
+	}
+
 	~Quaternion() {}
 
 	explicit Quaternion(const Vector4 &V) : Vector4(V) {}
@@ -57,8 +62,4 @@ public:
 	{
 		return *this = *this * B;
 	}
-
-private:
-	// You can't have an uninitialized quaternion.
-	Quaternion() {}
 };
