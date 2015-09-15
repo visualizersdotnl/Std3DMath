@@ -1,6 +1,6 @@
 # Std3DMath
 
-Standard C++ math primitives for 3D rendering.
+Standard math for 3D rendering (C++).
 
 - No SIMD optimizations (I prefer to apply those locally).
 - Not very complete nor intended to be; I add & refactor by demand.

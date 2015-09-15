@@ -8,7 +8,7 @@
 	  For now, just use functions like Vector4::Dot() or cast.
 
 	To do:
-	- Deriving from Vector4 wasn't the brightest plan: undo this.
+	- Do not derive from Vector4.
 	- Create from Euler angles.
 	- Create from matrix.
 */

@@ -4,7 +4,7 @@
 
 	Uses column-major layout (translation lives in the bottom-left corner).
 	This model reflects the one used by many 3D APIs.
-	However, row-major is potentially nicer for (SIMD) CPU transforms.
+	However, row-major is potentially nicer for (SIMD) CPU transform.
 
 	- Assumes left-handed coordinate system.
 	- Consider using Quaternion for rotations, as it saves memory & cycles.
@@ -13,7 +13,6 @@
 	- Unionize Vector4s with floats.
 	- Implement general and affine inverse.
 	- Implement in-place operations (scale, translate, rotate).
-	- In-place operations (translate, rotate, scale).
 	- Optimize; seemingly simple operations may end up being too costly.
 */
 
@@ -30,6 +29,7 @@ public:
 	static const Matrix44 RotationY(float angle);
 	static const Matrix44 RotationZ(float angle);
 	static const Matrix44 RotationAxis(const Vector3 &axis, float angle);
+	static const Matrix44 RotationYawPitchRoll(float yaw, float pitch, float roll);
 	static const Matrix44 View(const Vector3 &from, const Vector3 &to, const Vector3 &up);
 	static const Matrix44 Perspective(float yFOV, float aspectRatio, float zNear = 0.1f, float zFar = 10000.f);
 	static const Matrix44 Orthographic(const Vector2 &topLeft, const Vector2 &bottomRight, float zNear, float zFar);
@@ -46,8 +46,6 @@ public:
 
 	void SetTranslation(const Vector3 &translation);
 	
-	const Matrix44 Transpose() const;
-
 	// - Multiplying matrices isn't commutative, so A*B != B*A.
 	// - Transformation order is left to right.
 	const Matrix44 Multiply(const Matrix44 &B) const;
@@ -55,6 +53,8 @@ public:
 	const Vector3 Transform3(const Vector3 &B) const; // Transform w/3x3 part (no translation, for vectors).
 	const Vector3 Transform4(const Vector3 &B) const; // Transform w/3x4 part (points).
 	const Vector4 Transform4(const Vector4 &B) const;
+
+	const Matrix44 Transpose() const;
 
 	// Invert orthogonal matrix (euclidian transform; may rotate, translate, reflect).
 	const Matrix44 OrthoInverse() const;

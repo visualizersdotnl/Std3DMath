@@ -95,6 +95,25 @@
 	return Matrix44::Rotation(Quaternion::AxisAngle(axis, angle));
 }
 
+// Taken from: http://source.winehq.org/source/dlls/d3dx9_36/math.c
+/* static */ const Matrix44 Matrix44::RotationYawPitchRoll(float yaw, float pitch, float roll)
+{
+	const float sRoll = sinf(roll), cRoll = cosf(roll);
+	const float sPitch = sinf(pitch), cPitch = cosf(pitch);
+	const float sYaw = sinf(yaw), cYaw = cosf(yaw);
+
+	const float ssPitchYaw = sPitch*sYaw;
+	const float scPitchYaw = sPitch*cYaw;
+
+	// Three rotations folded into one (can probably lose another multiply or two).
+	Matrix44 matrix;
+	matrix.rows[0] = Vector4(sRoll*ssPitchYaw + cRoll*cYaw, sRoll*cPitch, sRoll*scPitchYaw - cRoll*sYaw, 0.f);
+	matrix.rows[1] = Vector4(cRoll*ssPitchYaw - sRoll*cYaw, cRoll*cPitch, cRoll*scPitchYaw + sRoll*sYaw, 0.f);
+	matrix.rows[2] = Vector4(                  cPitch*sYaw,      -sPitch,                   cPitch*cYaw, 0.f);
+	matrix.rows[3] = Vector4(                          0.f,          0.f,                           0.f, 1.f);
+	return matrix;
+}
+
 /* static */ const Matrix44 Matrix44::View(const Vector3 &from, const Vector3 &to, const Vector3 &up)
 {
 	assert(true == comparef(1.f, up.Length()));
@@ -162,16 +181,6 @@ void Matrix44::SetTranslation(const Vector3 &V)
 	rows[3].z = V.z;
 }
 
-const Matrix44 Matrix44::Transpose() const
-{
-	Matrix44 matrix;
-	matrix.rows[0] = Vector4(rows[0].x, rows[1].x, rows[2].x, rows[3].x);
-	matrix.rows[1] = Vector4(rows[0].y, rows[1].y, rows[2].y, rows[3].y);
-	matrix.rows[2] = Vector4(rows[0].z, rows[1].z, rows[2].z, rows[3].z);
-	matrix.rows[3] = Vector4(rows[0].w, rows[1].w, rows[2].w, rows[3].w);
-	return matrix;
-}
-
 const Matrix44 Matrix44::Multiply(const Matrix44 &B) const
 {
 	Matrix44 matrix;
@@ -220,6 +229,16 @@ const Vector4 Matrix44::Transform4(const Vector4 &B) const
 		rows[1]*B,
 		rows[2]*B,
 		rows[3]*B);
+}
+
+const Matrix44 Matrix44::Transpose() const
+{
+	Matrix44 matrix;
+	matrix.rows[0] = Vector4(rows[0].x, rows[1].x, rows[2].x, rows[3].x);
+	matrix.rows[1] = Vector4(rows[0].y, rows[1].y, rows[2].y, rows[3].y);
+	matrix.rows[2] = Vector4(rows[0].z, rows[1].z, rows[2].z, rows[3].z);
+	matrix.rows[3] = Vector4(rows[0].w, rows[1].w, rows[2].w, rows[3].w);
+	return matrix;
 }
 
 const Matrix44 Matrix44::OrthoInverse() const

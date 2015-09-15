@@ -1,6 +1,6 @@
 
 /*
-	Standard C++ math primitives for 3D rendering.
+	C++ math primitives for 3D rendering.
 	(c) visualizers.nl
 
 	Please check README.md for more information.
