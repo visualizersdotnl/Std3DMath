@@ -19,7 +19,7 @@
 	if (dot > 0.9995f)
 	{
 		// Very small angle: interpolate linearly.
-		return Quaternion(lerpf<Vector4>(A, B, T).Normalized());
+		return lerpf<Vector4>(A, B, T).Normalized();
 	}
 
 	// Clamp to acos() domain.
@@ -29,7 +29,8 @@
 	float phi = theta*T;
 
 	// Orthonormal basis.
-	Vector4 basis = (B - Scale(A, dot)).Normalized();
+	Vector4 basis = B - A*dot;
+	basis.Normalize();
 
-	return Quaternion(Vector4::Scale(A, cosf(theta)) + basis*sinf(theta));
+	return A*cosf(phi) + basis*sinf(phi);
 }
