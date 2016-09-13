@@ -176,11 +176,11 @@
 
 Matrix44& Matrix44::Scale(const Vector3 &scale)
 {
-	this.Multiply(Scaling(scale)); // FIXME: do this in-place.
+	Multiply(Scaling(scale)); // FIXME: do this in-place.
 	return *this;
 }
 
-Matrix44& Matrix4::Translate(const Vector3 &translation)
+Matrix44& Matrix44::Translate(const Vector3 &translation)
 {
 	rows[3].x += translation.x;
 	rows[3].y += translation.y;
@@ -286,8 +286,8 @@ const Matrix44 Matrix44::GeneralInverse() const
 	Matrix44 matrix;
 
 	// FIXME: this is too hacky.
-	const float *pSrc = reinterpret_cast<const Matrix44 *>(this);
-	float *pInv = reinterpret_cast<Matrix44 *>(&matrix);
+	const float *pSrc = reinterpret_cast<const float *>(this);
+	float *pInv = reinterpret_cast<float *>(&matrix);
 
 	pInv[ 0] =  pSrc[5] * pSrc[10] * pSrc[15] - pSrc[5] * pSrc[11] * pSrc[14] - pSrc[9] * pSrc[6] * pSrc[15] + pSrc[9] * pSrc[7] * pSrc[14] + pSrc[13] * pSrc[6] * pSrc[11] - pSrc[13] * pSrc[7] * pSrc[10];
 	pInv[ 4] = -pSrc[4] * pSrc[10] * pSrc[15] + pSrc[4] * pSrc[11] * pSrc[14] + pSrc[8] * pSrc[6] * pSrc[15] - pSrc[8] * pSrc[7] * pSrc[14] - pSrc[12] * pSrc[6] * pSrc[11] + pSrc[12] * pSrc[7] * pSrc[10];
