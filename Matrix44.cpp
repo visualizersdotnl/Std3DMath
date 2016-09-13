@@ -174,6 +174,20 @@
 	return matrix;
 }
 
+Matrix44& Matrix44::Scale(const Vector3 &scale)
+{
+	this.Multiply(Scaling(scale)); // FIXME: do this in-place.
+	return *this;
+}
+
+Matrix44& Matrix4::Translate(const Vector3 &translation)
+{
+	rows[3].x += translation.x;
+	rows[3].y += translation.y;
+	rows[3].z += translation.z;
+	return *this;
+}
+
 void Matrix44::SetTranslation(const Vector3 &V)
 {
 	rows[3].x = V.x;
@@ -262,18 +276,46 @@ const Matrix44 Matrix44::OrthoInverse() const
 
 const Matrix44 Matrix44::AffineInverse() const
 {
-	Matrix44 matrix;
-
-	// FIXME: implement.
-
-	return matrix;
+	// FIXME: implement constrained inverse.
+	return GeneralInverse();
 }
 
+// FIXME: this is one of those cases that could actually benefit from general SIMD optimization.
 const Matrix44 Matrix44::GeneralInverse() const
 {
 	Matrix44 matrix;
 
-	// FIXME: implement.
+	// FIXME: this is too hacky.
+	const float *pSrc = reinterpret_cast<const Matrix44 *>(this);
+	float *pInv = reinterpret_cast<Matrix44 *>(&matrix);
+
+	pInv[ 0] =  pSrc[5] * pSrc[10] * pSrc[15] - pSrc[5] * pSrc[11] * pSrc[14] - pSrc[9] * pSrc[6] * pSrc[15] + pSrc[9] * pSrc[7] * pSrc[14] + pSrc[13] * pSrc[6] * pSrc[11] - pSrc[13] * pSrc[7] * pSrc[10];
+	pInv[ 4] = -pSrc[4] * pSrc[10] * pSrc[15] + pSrc[4] * pSrc[11] * pSrc[14] + pSrc[8] * pSrc[6] * pSrc[15] - pSrc[8] * pSrc[7] * pSrc[14] - pSrc[12] * pSrc[6] * pSrc[11] + pSrc[12] * pSrc[7] * pSrc[10];
+	pInv[ 8] =  pSrc[4] * pSrc[ 9] * pSrc[15] - pSrc[4] * pSrc[11] * pSrc[13] - pSrc[8] * pSrc[5] * pSrc[15] + pSrc[8] * pSrc[7] * pSrc[13] + pSrc[12] * pSrc[5] * pSrc[11] - pSrc[12] * pSrc[7] * pSrc[ 9];
+	pInv[12] = -pSrc[4] * pSrc[ 9] * pSrc[14] + pSrc[4] * pSrc[10] * pSrc[13] + pSrc[8] * pSrc[5] * pSrc[14] - pSrc[8] * pSrc[6] * pSrc[13] - pSrc[12] * pSrc[5] * pSrc[10] + pSrc[12] * pSrc[6] * pSrc[ 9];
+	pInv[ 1] = -pSrc[1] * pSrc[10] * pSrc[15] + pSrc[1] * pSrc[11] * pSrc[14] + pSrc[9] * pSrc[2] * pSrc[15] - pSrc[9] * pSrc[3] * pSrc[14] - pSrc[13] * pSrc[2] * pSrc[11] + pSrc[13] * pSrc[3] * pSrc[10];
+	pInv[ 5] =  pSrc[0] * pSrc[10] * pSrc[15] - pSrc[0] * pSrc[11] * pSrc[14] - pSrc[8] * pSrc[2] * pSrc[15] + pSrc[8] * pSrc[3] * pSrc[14] + pSrc[12] * pSrc[2] * pSrc[11] - pSrc[12] * pSrc[3] * pSrc[10];
+	pInv[ 9] = -pSrc[0] * pSrc[ 9] * pSrc[15] + pSrc[0] * pSrc[11] * pSrc[13] + pSrc[8] * pSrc[1] * pSrc[15] - pSrc[8] * pSrc[3] * pSrc[13] - pSrc[12] * pSrc[1] * pSrc[11] + pSrc[12] * pSrc[3] * pSrc[ 9];
+	pInv[13] =  pSrc[0] * pSrc[ 9] * pSrc[14] - pSrc[0] * pSrc[10] * pSrc[13] - pSrc[8] * pSrc[1] * pSrc[14] + pSrc[8] * pSrc[2] * pSrc[13] + pSrc[12] * pSrc[1] * pSrc[10] - pSrc[12] * pSrc[2] * pSrc[ 9];
+	pInv[ 2] =  pSrc[1] * pSrc[ 6] * pSrc[15] - pSrc[1] * pSrc[ 7] * pSrc[14] - pSrc[5] * pSrc[2] * pSrc[15] + pSrc[5] * pSrc[3] * pSrc[14] + pSrc[13] * pSrc[2] * pSrc[ 7] - pSrc[13] * pSrc[3] * pSrc[ 6];
+	pInv[ 6] = -pSrc[0] * pSrc[ 6] * pSrc[15] + pSrc[0] * pSrc[ 7] * pSrc[14] + pSrc[4] * pSrc[2] * pSrc[15] - pSrc[4] * pSrc[3] * pSrc[14] - pSrc[12] * pSrc[2] * pSrc[ 7] + pSrc[12] * pSrc[3] * pSrc[ 6];
+	pInv[10] =  pSrc[0] * pSrc[ 5] * pSrc[15] - pSrc[0] * pSrc[ 7] * pSrc[13] - pSrc[4] * pSrc[1] * pSrc[15] + pSrc[4] * pSrc[3] * pSrc[13] + pSrc[12] * pSrc[1] * pSrc[ 7] - pSrc[12] * pSrc[3] * pSrc[ 5];
+	pInv[14] = -pSrc[0] * pSrc[ 5] * pSrc[14] + pSrc[0] * pSrc[ 6] * pSrc[13] + pSrc[4] * pSrc[1] * pSrc[14] - pSrc[4] * pSrc[2] * pSrc[13] - pSrc[12] * pSrc[1] * pSrc[ 6] + pSrc[12] * pSrc[2] * pSrc[ 5];
+	pInv[ 3] = -pSrc[1] * pSrc[ 6] * pSrc[11] + pSrc[1] * pSrc[ 7] * pSrc[10] + pSrc[5] * pSrc[2] * pSrc[11] - pSrc[5] * pSrc[3] * pSrc[10] - pSrc[ 9] * pSrc[2] * pSrc[ 7] + pSrc[ 9] * pSrc[3] * pSrc[ 6];
+	pInv[ 7] =  pSrc[0] * pSrc[ 6] * pSrc[11] - pSrc[0] * pSrc[ 7] * pSrc[10] - pSrc[4] * pSrc[2] * pSrc[11] + pSrc[4] * pSrc[3] * pSrc[10] + pSrc[ 8] * pSrc[2] * pSrc[ 7] - pSrc[ 8] * pSrc[3] * pSrc[ 6];
+	pInv[11] = -pSrc[0] * pSrc[ 5] * pSrc[11] + pSrc[0] * pSrc[ 7] * pSrc[ 9] + pSrc[4] * pSrc[1] * pSrc[11] - pSrc[4] * pSrc[3] * pSrc[ 9] - pSrc[ 8] * pSrc[1] * pSrc[ 7] + pSrc[ 8] * pSrc[3] * pSrc[ 5];
+	pInv[15] =  pSrc[0] * pSrc[ 5] * pSrc[10] - pSrc[0] * pSrc[ 6] * pSrc[ 9] - pSrc[4] * pSrc[1] * pSrc[10] + pSrc[4] * pSrc[2] * pSrc[ 9] + pSrc[ 8] * pSrc[1] * pSrc[ 6] - pSrc[ 8] * pSrc[2] * pSrc[ 5];
+	 
+    float determinant = pSrc[0]*pInv[0] + pSrc[1]*pInv[4] + pSrc[2]*pInv[8] + pSrc[3]*pInv[12];
+ 	if (0.f == determinant)
+ 	{
+ 		// FIXME: assert?
+ 		return Matrix44::Identity();
+ 	}
+
+	determinant = 1.f/determinant;
+	for (unsigned int iElem = 0; iElem < 16; ++iElem)
+		pInv[iElem] *= determinant;
 
 	return matrix;
 }

@@ -41,6 +41,7 @@ inline float saturatef(float value)
 {
 	return std::max<float>(0.f, std::min<float>(1.f, value));
 }
+
 // Scalar interpolation.
 template<typename T>
 inline const T lerpf(const T &a, const T &b, float t)

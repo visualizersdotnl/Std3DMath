@@ -11,8 +11,7 @@
 
 	To do:
 	- Unionize Vector4s with floats.
-	- Implement general and affine inverse.
-	- Implement in-place operations (scale, translate, rotate).
+	- Implement affine inverse.
 	- Optimize; seemingly simple operations may end up being too costly.
 */
 
@@ -40,9 +39,9 @@ public:
 
 	~Matrix44() {}
 
-//	Matrix44& Scale(const Vector3 &scale);
-//	Matrix44& Translate(const Vector3 &translation);
-//	Matrix44& Rotate(...);
+	// In-place operations (much faster than a mere multiplication).
+	Matrix44& Scale(const Vector3 &scale);
+	Matrix44& Translate(const Vector3 &translation);
 
 	void SetTranslation(const Vector3 &translation);
 	
