@@ -79,12 +79,18 @@ public:
 	
 	const Vector2 Normalized() const
 	{
-		return *this * 1.f/Length();
+		auto result = *this;
+		result.Normalize();
+		return result;
 	}
 
 	void Normalize()
 	{
-		*this *= 1.f/Length();
+		const float length = Length();
+		if (length > 0.f)
+		{
+			*this *= 1.f/length;
+		}
 	}
 
 	float Angle(const Vector2 &B) const
@@ -94,7 +100,8 @@ public:
 
 	const Vector2 Project(const Vector2 &B) const
 	{
-		return *this * Dot(*this, B);
+		const Vector3 unitB = B.Normalized();
+		return B.Normalized() * Dot(*this, unitB);
 	}
 
 	const Vector2 Reflect(const Vector2 &normal) const

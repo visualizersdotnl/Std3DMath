@@ -85,14 +85,19 @@ public:
 	
 	const Vector4 Normalized() const
 	{
-		return *this * 1.f/Length();
+		auto result = *this;
+		result.Normalize();
+		return result;
 	}
 
 	void Normalize()
 	{
-		*this *= 1.f/Length();
+		const float length = Length();
+		if (length > 0.f)
+		{
+			*this *= 1.f/length;
+		}
 	}
-
 
 	// Chiefly intended for constant uploads.
 	const float *GetData() const { return &x; }

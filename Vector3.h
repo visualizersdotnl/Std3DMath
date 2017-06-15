@@ -91,12 +91,18 @@ public:
 	
 	const Vector3 Normalized() const
 	{
-		return *this * 1.f/Length();
+		auto result = *this;
+		result.Normalize();
+		return result;
 	}
 
 	void Normalize()
 	{
-		*this *= 1.f/Length();
+		const float length = Length();
+		if (length > 0.f)
+		{
+			*this *= 1.f/length;
+		}
 	}
 
 	float Angle(const Vector3 &B) const
@@ -106,12 +112,14 @@ public:
 
 	const Vector3 Project(const Vector3 &B) const
 	{
-		return *this * Dot(*this, B);
+		// A1 = |A|*cosAng=A*(B/|B|)
+		// A' = (B/|B|)*(A1)
+		const Vector3 unitB = B.Normalized();
+		return B.Normalized() * Dot(*this, unitB);
 	}
 
 	const Vector3 Reflect(const Vector3 &normal) const
-	{
-		const float R = 2.f*Dot(*this, normal);
+	{		const float R = 2.f*Dot(*this, normal);
 		return *this - normal*R;
 	}
 
