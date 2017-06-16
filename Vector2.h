@@ -100,7 +100,7 @@ public:
 
 	const Vector2 Project(const Vector2 &B) const
 	{
-		const Vector3 unitB = B.Normalized();
+		const Vector2 unitB = B.Normalized();
 		return B.Normalized() * Dot(*this, unitB);
 	}
 
