@@ -119,7 +119,8 @@ public:
 	}
 
 	const Vector3 Reflect(const Vector3 &normal) const
-	{		const float R = 2.f*Dot(*this, normal);
+	{		
+		const float R = 2.f*Dot(*this, normal);
 		return *this - normal*R;
 	}
 
