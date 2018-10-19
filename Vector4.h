@@ -8,27 +8,36 @@
 class Vector4
 {
 public:
-	static const Vector4 Add(const Vector4 &A, const Vector4 &B) { return Vector4(A.x+B.x, A.y+B.y, A.z+B.z, A.w+B.w); }
-	static const Vector4 Sub(const Vector4 &A, const Vector4 &B) { return Vector4(A.x-B.x, A.y-B.y, A.z-B.z, A.w-B.w); }
-	static const Vector4 Mul(const Vector4 &A, const Vector4 &B) { return Vector4(A.x*B.x, A.y*B.y, A.z*B.z, A.w*B.w); }
-	static const Vector4 Div(const Vector4 &A, const Vector4 &B) { return Vector4(A.x/B.x, A.y/B.y, A.z/B.z, A.w/B.w); }
+	S3D_INLINE static const Vector4 Add(const Vector4 &A, const Vector4 &B) { return {A.x+B.x, A.y+B.y, A.z+B.z, A.w+B.w}; }
+	S3D_INLINE static const Vector4 Sub(const Vector4 &A, const Vector4 &B) { return {A.x-B.x, A.y-B.y, A.z-B.z, A.w-B.w}; }
+	S3D_INLINE static const Vector4 Mul(const Vector4 &A, const Vector4 &B) { return {A.x*B.x, A.y*B.y, A.z*B.z, A.w*B.w}; }
+	S3D_INLINE static const Vector4 Div(const Vector4 &A, const Vector4 &B) { return {A.x/B.x, A.y/B.y, A.z/B.z, A.w/B.w}; }
 
-	static const Vector4 Scale(const Vector4 &A, float B)
+	S3D_INLINE static const Vector4 Scale(const Vector4 &A, float B)
 	{
-		return Vector4(A.x*B, A.y*B, A.z*B, A.w*B);
+		return { A.x*B, A.y*B, A.z*B, A.w*B };
 	}
 
-	static float Dot(const Vector4 &A, const Vector4 &B)
+	S3D_INLINE static float Dot(const Vector4 &A, const Vector4 &B)
 	{
 		return A.x*B.x + A.y*B.y + A.z*B.z + A.w*B.w;
 	}
 
 public:
-	float x, y, z, w;
+	// 03/08/2018 - Added for Bevacqua.
+	operator __m128() const { return vSSE; }
 
-	Vector4() {}
-	virtual ~Vector4() {}
+	union
+	{
+		struct {
+			float x, y, z, w;
+		};
+
+		__m128 vSSE;
+	};
 	
+	Vector4() {}
+
 	explicit Vector4(float scalar) : 
 		x(scalar), y(scalar), z(scalar), w(scalar) {}
 
@@ -46,7 +55,7 @@ public:
 	const Vector4 operator -(const Vector4 &B) const { return Sub(*this, B); }
 	const Vector4 operator -(float B)          const { return Sub(*this, Vector4(B)); }
 	const float   operator *(const Vector4 &B) const { return Dot(*this, B); }
-	const Vector4 operator *(float B)          const { return Mul(*this, Vector4(B)); }
+	const Vector4 operator *(float B)          const { return Scale(*this, B); }
 	const Vector4 operator /(const Vector4 &B) const { return Div(*this, B); }
 	const Vector4 operator /(float B)          const { return Div(*this, Vector4(B)); }
 
@@ -73,12 +82,12 @@ public:
 		return LengthSq() < B.LengthSq();
 	}
 
-	float LengthSq() const
+	S3D_INLINE float LengthSq() const
 	{
 		return Dot(*this, *this);
 	}
 
-	float Length() const
+	S3D_INLINE float Length() const
 	{
 		return sqrtf(LengthSq());
 	}
@@ -97,6 +106,16 @@ public:
 		{
 			*this *= 1.f/length;
 		}
+	}
+
+	const Vector4 Multiplied(const Vector4 &B) const
+	{
+		return Mul(*this, B);
+	}
+
+	void Multiply(const Vector4 &B)
+	{
+		*this = Mul(*this, B);
 	}
 
 	// Chiefly intended for constant uploads.

@@ -4,6 +4,24 @@
 	(c) visualizers.nl
 
 	Please check README.md for more information.
+
+	Fixed per 19/10/2018 (in Bevacqua project):
+	- Fixed issue raised by Marco Foco (see for ex. Vector3::Add()).
+	- Added Matrix44::FromArray33().
+	- Forced 16-byte alignment for Vector4 & Vector3 (padded) by unionizing with __m128 (SSE/SIMD).
+	- kPI et cetera are now 'constexpr'.
+	- I'm dead tired of MSVC not inlining what it could and should, so I'm going to force a few, look for S3D_INLINE.
+	- Removed empty constructors (put it back for Vector3) & destructors, except for Vector4.
+	- Added "2*kPI".
+	- Added an actual Multiplied()/Multiply() function on Vector3 and Vector4 as I really needed it more often.
+	- Fix: used Scale() function instead of Mul() when multiplying vector by scalar.
+	- Added fracf().
+	- Fixed clampf().
+	- Fixed lerpf(), smoothstepf() & smootherstepf().
+
+	Pay attention to:
+	- Added cast operator (const) to __m128 on Vector3/Vector4 (don't backport, or do it in a portable fashion).
+	- Problem: lerpf() doesn't work on vector types because they do a dot() when using the asterisk operator.
 */
 
 #if !defined(STD_3D_MATH)
@@ -12,10 +30,11 @@
 #include "Dependencies.h"
 
 // A few meaningful constants.
-const float kPI = 3.1415926535897932384626433832795f;
-const float kHalfPI = kPI*0.5f;
-const float kEpsilon = 5.96e-08f; // Max. error for single precision (32-bit).
-const float kGoldenRatio = 1.61803398875f;
+constexpr float kPI = 3.1415926535897932384626433832795f;
+constexpr float kHalfPI = kPI*0.5f;
+constexpr float k2PI = 2.f*kPI;
+constexpr float kEpsilon = 5.96e-08f; // Max. error for single precision (32-bit).
+constexpr float kGoldenRatio = 1.61803398875f;
 
 // Generic floating point random.
 // Has poor distribution due to rand() being 16-bit, so don't use it when proper distribution counts.
@@ -33,7 +52,13 @@ inline bool comparef(float a, float b)
 // GLSL-style clamp.
 inline float clampf(float min, float max, float value)
 {
-	return std::max<float>(max, std::min<float>(min, value));
+	if (value < min)
+		return min;
+
+	if (value > max)
+		return max;
+
+	return value;
 }
 
 // HLSL saturate().
@@ -42,19 +67,29 @@ inline float saturatef(float value)
 	return std::max<float>(0.f, std::min<float>(1.f, value));
 }
 
+// GLSL frac().
+inline float fracf(float value) { return value - std::truncf(value); }
+
 // Scalar interpolation.
 template<typename T>
 inline const T lerpf(const T &a, const T &b, float t)
 {
-	return a*(1.f-t) + b*t;
+	return a + (b-a)*t;
+}
+
+// Bezier smoothstep.
+inline float smoothstepf(float a, float b, float t)
+{
+	t = t*t * (3- 2*t);
+	return lerpf<float>(a, b, t);
 }
 
 // Ken Perlin's take on Smoothstep.
 // Source: http://en.wikipedia.org/wiki/Smoothstep
-inline float smoothstepf(float a, float b, float t)
+inline float smootherstepf(float a, float b, float t)
 {
-	t = saturatef(t);
-	return lerpf<float>(a, b, t*t*t*(t*(t*6.f - 15.f) + 10.f));
+	t = t*t*t*(t*(t * 6.f-15.f) + 10.f);
+	return lerpf<float>(a, b, t);
 }
 
 #include "Vector2.h"

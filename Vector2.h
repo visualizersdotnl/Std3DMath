@@ -8,14 +8,14 @@
 class Vector2
 {
 public:
-	static const Vector2 Add(const Vector2 &A, const Vector2 &B) { return Vector2(A.x+B.x, A.y+B.y); }
-	static const Vector2 Sub(const Vector2 &A, const Vector2 &B) { return Vector2(A.x-B.x, A.y-B.y); }
-	static const Vector2 Mul(const Vector2 &A, const Vector2 &B) { return Vector2(A.x*B.x, A.y*B.y); }
-	static const Vector2 Div(const Vector2 &A, const Vector2 &B) { return Vector2(A.x/B.x, A.y/B.y); }
+	S3D_INLINE static const Vector2 Add(const Vector2 &A, const Vector2 &B) { return {A.x+B.x, A.y+B.y}; }
+	S3D_INLINE static const Vector2 Sub(const Vector2 &A, const Vector2 &B) { return {A.x-B.x, A.y-B.y}; }
+	S3D_INLINE static const Vector2 Mul(const Vector2 &A, const Vector2 &B) { return {A.x*B.x, A.y*B.y}; }
+	S3D_INLINE static const Vector2 Div(const Vector2 &A, const Vector2 &B) { return {A.x/B.x, A.y/B.y}; }
 
 	static const Vector2 Scale(const Vector2 &A, float B)
 	{
-		return Vector2(A.x*B, A.y*B);
+		return { A.x*B, A.y*B };
 	}
 
 	static float Dot(const Vector2 &A, const Vector2 &B)
@@ -25,9 +25,6 @@ public:
 
 public:
 	float x, y;
-
-	Vector2() {}
-	~Vector2() {}
 	
 	explicit Vector2(float scalar) : 
 		x(scalar), y(scalar) {}
@@ -40,7 +37,7 @@ public:
 	const Vector2 operator -(const Vector2 &B) const { return Sub(*this, B); }
 	const Vector2 operator -(float B)          const { return Sub(*this, Vector2(B)); }
 	const float   operator *(const Vector2 &B) const { return Dot(*this, B); }
-	const Vector2 operator *(float B)          const { return Mul(*this, Vector2(B)); }
+	const Vector2 operator *(float B)          const { return Scale(*this, B); }
 	const Vector2 operator /(const Vector2 &B) const { return Div(*this, B); }
 	const Vector2 operator /(float B)          const { return Div(*this, Vector2(B)); }
 
@@ -67,12 +64,12 @@ public:
 		return LengthSq() < B.LengthSq();
 	}
 
-	float LengthSq() const
+	S3D_INLINE float LengthSq() const
 	{
 		return Dot(*this, *this);
 	}
 
-	float Length() const
+	S3D_INLINE float Length() const
 	{
 		return sqrtf(Dot(*this, *this));
 	}
@@ -93,7 +90,7 @@ public:
 		}
 	}
 
-	float Angle(const Vector2 &B) const
+	S3D_INLINE float Angle(const Vector2 &B) const
 	{
 		return acosf(Dot(*this, B));
 	}
@@ -110,7 +107,7 @@ public:
 		return *this - normal*R;
 	}
 
-	const Vector2 Perpendicular() const
+	S3D_INLINE const Vector2 Perpendicular() const
 	{
 		return Vector2(-y, x);
 	}
