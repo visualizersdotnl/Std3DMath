@@ -19,6 +19,8 @@
 	- Fixed clampf().
 	- Fixed lerpf(), smoothstepf() & smootherstepf().
 
+	For further fixes see Github issues.
+
 	Pay attention to:
 	- Added cast operator (const) to __m128 on Vector3/Vector4 (don't backport, or do it in a portable fashion).
 	- Problem: lerpf() doesn't work on vector types because they do a dot() when using the asterisk operator.
@@ -29,11 +31,15 @@
 
 #include "Dependencies.h"
 
+#if !defined(FLT_EPSILON)
+	#include <cfloat>
+#endif
+
 // A few meaningful constants.
 constexpr float kPI = 3.1415926535897932384626433832795f;
 constexpr float kHalfPI = kPI*0.5f;
 constexpr float k2PI = 2.f*kPI;
-constexpr float kEpsilon = 5.96e-08f; // Max. error for single precision (32-bit).
+constexpr float kEpsilon = FLT_EPSILON; // 5.96e-08f; // Max. error for single precision (32-bit).
 constexpr float kGoldenRatio = 1.61803398875f;
 
 // Generic floating point random.

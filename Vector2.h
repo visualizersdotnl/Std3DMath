@@ -84,7 +84,7 @@ public:
 	void Normalize()
 	{
 		const float length = Length();
-		if (length > 0.f)
+		if (length > kEpsilon)
 		{
 			*this *= 1.f/length;
 		}
@@ -95,10 +95,11 @@ public:
 		return acosf(Dot(*this, B));
 	}
 
-	const Vector2 Project(const Vector2 &B) const
+	// Project A (this) onto B
+	const Vector2 ScalarProduct(const Vector2 &B) const
 	{
 		const Vector2 unitB = B.Normalized();
-		return B.Normalized() * Dot(*this, unitB);
+		return unitB * Dot(*this, unitB);
 	}
 
 	const Vector2 Reflect(const Vector2 &normal) const
