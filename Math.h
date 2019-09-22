@@ -86,7 +86,7 @@ inline const T lerpf(const T &a, const T &b, float t)
 // Bezier smoothstep.
 inline float smoothstepf(float a, float b, float t)
 {
-	t = t*t * (3- 2*t);
+	t = t*t * (3.f - 2.f*t);
 	return lerpf<float>(a, b, t);
 }
 
@@ -103,5 +103,6 @@ inline float smootherstepf(float a, float b, float t)
 #include "Vector4.h"
 #include "Quaternion.h"
 #include "Matrix44.h"
+#include "Misc.h"
 
 #endif // STD_3D_MATH

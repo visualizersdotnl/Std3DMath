@@ -6,3 +6,5 @@ Standard math for 3D rendering (C++).
 - Not very complete nor intended to be; I add & refactor by demand.
 - Resides in global namespace (change if necessary).
 - All angles are in radians (unless explicitly stated otherwise).
+- Library uses standard assert() where necessary (FIXME?).
+
