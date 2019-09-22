@@ -20,6 +20,7 @@
 	- Fixed lerpf(), smoothstepf() & smootherstepf().
 
 	For further fixes see Github issues.
+	- Static inline check-up?
 
 	Pay attention to:
 	- Added cast operator (const) to __m128 on Vector3/Vector4 (don't backport, or do it in a portable fashion).
@@ -39,24 +40,25 @@
 constexpr float kPI = 3.1415926535897932384626433832795f;
 constexpr float kHalfPI = kPI*0.5f;
 constexpr float k2PI = 2.f*kPI;
-constexpr float kEpsilon = FLT_EPSILON; // 5.96e-08f; // Max. error for single precision (32-bit).
+constexpr float kEpsilon = FLT_EPSILON;
+// constexpr float kEpsilon = 5.96e-08f; // Max. error for single precision (32-bit).
 constexpr float kGoldenRatio = 1.61803398875f;
 
 // Generic floating point random.
 // Has poor distribution due to rand() being 16-bit, so don't use it when proper distribution counts.
-inline float randf(float range)
+static inline float randf(float range)
 {
 	return range*((float) rand() / RAND_MAX);
 }
 
 // Single precision compare.
-inline bool comparef(float a, float b)
+static inline bool comparef(float a, float b)
 {
 	return fabsf(a-b) < kEpsilon;
 }
 
 // GLSL-style clamp.
-inline float clampf(float min, float max, float value)
+static inline float clampf(float min, float max, float value)
 {
 	if (value < min)
 		return min;
@@ -68,23 +70,23 @@ inline float clampf(float min, float max, float value)
 }
 
 // HLSL saturate().
-inline float saturatef(float value)
+static inline float saturatef(float value)
 {
 	return std::max<float>(0.f, std::min<float>(1.f, value));
 }
 
 // GLSL frac().
-inline float fracf(float value) { return value - std::truncf(value); }
+static inline float fracf(float value) { return value - std::truncf(value); }
 
 // Scalar interpolation.
 template<typename T>
-inline const T lerpf(const T &a, const T &b, float t)
+static inline const T lerpf(const T &a, const T &b, float t)
 {
 	return a + (b-a)*t;
 }
 
 // Bezier smoothstep.
-inline float smoothstepf(float a, float b, float t)
+static inline float smoothstepf(float a, float b, float t)
 {
 	t = t*t * (3.f - 2.f*t);
 	return lerpf<float>(a, b, t);
@@ -92,7 +94,7 @@ inline float smoothstepf(float a, float b, float t)
 
 // Ken Perlin's take on Smoothstep.
 // Source: http://en.wikipedia.org/wiki/Smoothstep
-inline float smootherstepf(float a, float b, float t)
+static inline float smootherstepf(float a, float b, float t)
 {
 	t = t*t*t*(t*(t * 6.f-15.f) + 10.f);
 	return lerpf<float>(a, b, t);

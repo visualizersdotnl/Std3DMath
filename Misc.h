@@ -9,5 +9,5 @@
 
 namespace Misc3D
 {
-	void ClosestPointOnLine(const Vector3 &line, const Vector3 &origin, const Vector3 &point);
+	void DistanceToLine(const Vector3 &line, const Vector3 &origin, const Vector3 &point);
 }
