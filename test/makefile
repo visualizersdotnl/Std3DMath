@@ -1,6 +1,6 @@
 
 TARGET = test
-SOURCES = test.cpp ../Vector3.cpp ../Matrix44.cpp ../Quaternion.cpp ../Misc.cpp
+SOURCES = test.cpp ../Matrix44.cpp ../Quaternion.cpp ../Misc.cpp
 
 CC = g++
 CFLAGS = -std=c++11 -g -Wall

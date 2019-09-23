@@ -157,12 +157,12 @@ public:
 	}
 
 	// A few basic refraction indices.
-	static const float kRefractVacuum;
-	static const float kRefractAir;
-	static const float kRefractWater;	
-	static const float kRefractGlass;
-	static const float kRefractPlastic;
-	static const float kRefractDiamond;
+	static constexpr float kRefractVacuum = 0.f;
+	static constexpr float kRefractAir = 1.0003f;
+	static constexpr float kRefractWater = 1.3333f;
+	static constexpr float kRefractGlass = 1.5f;
+	static constexpr float kRefractPlastic = 1.5f;
+	static constexpr float kRefractDiamond = 2.417f;
 
 	S3D_INLINE const Vector3 Perpendicular(const Vector3 &B) const
 	{
