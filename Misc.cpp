@@ -7,7 +7,7 @@
 
 namespace Misc3D
 {
-	void DistanceToLine(const Vector3 &line, const Vector3 &origin, const Vector3 &point)
+	const Vector3 DistanceToLine(const Vector3 &line, const Vector3 &origin, const Vector3 &point)
 	{
 //		assert(line.LengthSq() == 1.f);
 

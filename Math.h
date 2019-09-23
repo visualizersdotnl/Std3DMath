@@ -19,7 +19,7 @@
 	- Fixed clampf().
 	- Fixed lerpf(), smoothstepf() & smootherstepf().
 
-	For further fixes see Github issues.
+	For further fixes & improvements: see Github issues.
 	- Static inline check-up?
 
 	Pay attention to:
@@ -31,10 +31,6 @@
 #define STD_3D_MATH
 
 #include "Dependencies.h"
-
-#if !defined(FLT_EPSILON)
-	#include <cfloat>
-#endif
 
 // A few meaningful constants.
 constexpr float kPI = 3.1415926535897932384626433832795f;

@@ -1,10 +1,11 @@
 
 #pragma once
 
-// Hack for 'cookiedough' (FIXME: MSVC doesn't quite listen to even this one!)
-#define S3D_INLINE __forceinline
+#define S3D_INLINE __inline
 
 // CRT & STL:
+#include <cfloat>
+#include <cmath>
 #include <assert.h>
 #include <string.h>  // memcpy()
 #include <math.h>    // sinf(), cosf(), et cetera
