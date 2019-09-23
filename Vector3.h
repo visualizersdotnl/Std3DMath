@@ -161,7 +161,7 @@ public:
 	static constexpr float kRefractAir = 1.0003f;
 	static constexpr float kRefractWater = 1.3333f;
 	static constexpr float kRefractGlass = 1.5f;
-	static constexpr float kRefractPlastic = 1.5f;
+	static constexpr float kRefractPlastic = 1.49f; // PMMA (acrylic, plexiglas, lucite, perspex), Source: Wikipedia
 	static constexpr float kRefractDiamond = 2.417f;
 
 	S3D_INLINE const Vector3 Perpendicular(const Vector3 &B) const
