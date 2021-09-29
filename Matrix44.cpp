@@ -142,7 +142,7 @@
 	const float zTrans = -zNear*zFar / zRange;
 
 	Matrix44 matrix;
-	matrix.rows[0] = Vector4(xScale,     0.f,        0.f, 0.f);
+	matrix.rows[0] = Vector4(xScale,    0.f,         0.f, 0.f);
 	matrix.rows[1] = Vector4(   0.f, yScale,         0.f, 0.f);
 	matrix.rows[2] = Vector4(   0.f,    0.f, zFar/zRange, 0.f);
 	matrix.rows[3] = Vector4(   0.f,    0.f,      zTrans, 0.f);
