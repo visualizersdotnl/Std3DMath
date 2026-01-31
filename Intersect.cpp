@@ -8,25 +8,15 @@
 
 namespace Std3DMath
 {
-	const Vector3 DistanceToLine(const Vector3 &line, const Vector3 &origin, const Vector3 &point)
+	float DistancePointToLine(const Vector3 &lineDir, const Vector3 &lineOrigin, const Vector3 &point, Vector3 &pointOnLine)
 	{
-//		assert(line.LengthSq() == 1.f);
+		const Vector3 toLine = point - lineOrigin;
+		const Vector3 projected  = toLine.Project(lineDir); // Will normalize lineDir, which I'd rather assert on top since the name infers it
 
-		// Normalize line.
-		const Vector3 direction = line.Normalized();
-
-		// Calculating this side gives us the second side of the triangle.
-		const Vector3 side = origin-point;
-
-		/*
-			Dot product of said side and the direction equals the distance
-			between the origin and the point on the line we're looking for.
-
-			Can also be expressed as 'cos(angle)*|side|', where angle is the angle between
-			the 2 vectors we have and the length of our freshly calculated side.
-		*/
-
-		const float distance = side*direction;
-		return origin + direction*distance;
+		// This is what you're usually after: closest point on the actual line
+		pointOnLine = lineOrigin + projected;
+		
+		// And this is literally how far we're removed from it (FIXME: a lot of practical cases can work with the squared disance)
+		return (toLine-projected).Length();
 	}
 }
