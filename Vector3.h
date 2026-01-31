@@ -130,7 +130,8 @@ public:
 		return acosf(Dot(*this, B));
 	}
 
-	// Project A (this) onto B
+	// Project A (this) onto B (refresher: https://www.youtube.com/watch?v=DfIsa7ArxSo)
+	// Easy to remember: like casting a shadow onto B, where the dot product is the magnitude or 'component'
 	const Vector3 Project(const Vector3 &B) const
 	{
 		const Vector3 unitB = B.Normalized();
