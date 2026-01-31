@@ -54,7 +54,7 @@ public:
 
 	const Matrix44 Transpose() const;
 
-	// Invert orthogonal matrix (euclidian transform; may rotate, translate, reflect).
+	// Invert orthonormal matrix (euclidian transform; may rotate, translate, reflect).
 	const Matrix44 OrthoInverse() const;
 
 	// Invert affine matrix (may also scale, shear).
