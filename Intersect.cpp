@@ -1,11 +1,12 @@
 
+
 /*
-	Misc. operations.
+	Intersection test functions (WIP: start moving ones used in various projects over here).
 */
 
 #include "Math.h"
 
-namespace Misc3D
+namespace Std3DMath
 {
 	const Vector3 DistanceToLine(const Vector3 &line, const Vector3 &origin, const Vector3 &point)
 	{

@@ -101,6 +101,6 @@ static inline float smootherstepf(float a, float b, float t)
 #include "Vector4.h"
 #include "Quaternion.h"
 #include "Matrix44.h"
-#include "Misc.h"
+#include "Intersect.h"
 
 #endif // STD_3D_MATH

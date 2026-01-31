@@ -131,10 +131,8 @@ public:
 	}
 
 	// Project A (this) onto B
-	const Vector3 ScalarProduct(const Vector3 &B) const
+	const Vector3 Project(const Vector3 &B) const
 	{
-		// A1 = |A|*cosAng=A*(B/|B|)
-		// A' = (B/|B|)*(A1)
 		const Vector3 unitB = B.Normalized();
 		return unitB * Dot(*this, unitB);
 	}

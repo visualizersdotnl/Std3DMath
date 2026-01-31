@@ -290,7 +290,7 @@ const Matrix44 Matrix44::AffineInverse() const
 	return GeneralInverse();
 }
 
-// FIXME: this is one of those cases that could actually benefit from general SIMD optimization.
+// FIXME: this is one of those cases that could actually benefit from general SIMD optimization (though who does a lot of general inverses, right?)
 const Matrix44 Matrix44::GeneralInverse() const
 {
 	Matrix44 matrix;

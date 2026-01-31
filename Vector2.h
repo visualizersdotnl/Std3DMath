@@ -96,7 +96,7 @@ public:
 	}
 
 	// Project A (this) onto B
-	const Vector2 ScalarProduct(const Vector2 &B) const
+	const Vector2 Project(const Vector2 &B) const
 	{
 		const Vector2 unitB = B.Normalized();
 		return unitB * Dot(*this, unitB);

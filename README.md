@@ -9,6 +9,8 @@ Please take heed of:
 - Aligned with Intel SIMD primitives for practical convenience (Vector3, Vector4).
 - Not very complete nor intended to be; I add & refactor on demand.
 - Resides in global namespace (change if necessary).
+  + Except for separate functions and such which are (to be) in the Std3DMath namespace.
+  + For brevity basic primitives remain in global namespace (for ex. Vector3).
 - All angles are in radians (unless explicitly stated otherwise).
 - Library uses standard assert() where necessary.
 - Warning: may have some _WIN32 specific SIMD dependencies.
