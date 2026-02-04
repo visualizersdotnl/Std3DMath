@@ -13,11 +13,7 @@ namespace Std3DMath
 {
 	float DistancePointToLine(const Vector3 &lineDir, const Vector3 &lineOrigin, const Vector3 &point, Vector3 &pointOnLine);
 
-	bool LineSphereIntersect(
-		const Vector3 &lineDir,
-		const Vector3 &lineOrigin,
-		float lineLen,
-		const Vector3 &spherePos,
-		float sphereRadius,
+	bool LineSphereIntersect(const Vector3 &lineDir, const Vector3 &lineOrigin, float lineLen,
+		const Vector3 &spherePos, float sphereRadius,
 		float &outT);
 }

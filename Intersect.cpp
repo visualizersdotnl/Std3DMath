@@ -20,13 +20,9 @@ namespace Std3DMath
 		return (toLine-projected).Length();
 	}
 
-	bool LineSphereIntersect(
-		const Vector3 &lineDir,
-    	const Vector3 &lineOrigin,
-	    float lineLen,
-    	const Vector3 &spherePos,
-    	float sphereRadius,
-    	float &outT)
+	bool LineSphereIntersect(const Vector3 &lineDir, const Vector3 &lineOrigin, float lineLen,
+		const Vector3 &spherePos, float sphereRadius,
+		float &outT)
 	{
 		const Vector3 toSphere = spherePos - lineOrigin;
 
