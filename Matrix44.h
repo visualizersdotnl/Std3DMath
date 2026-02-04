@@ -57,7 +57,8 @@ public:
 	// Invert orthonormal matrix (euclidian transform; may rotate, translate, reflect).
 	const Matrix44 OrthoInverse() const;
 
-	// Invert affine matrix (may also scale, shear).
+	// Invert affine matrix (may also scale, shear: simply put, any matrix that disregards the orhtonormal
+	// basis: skewing, shearing, alteration of perspective.
 	const Matrix44 AffineInverse() const;
 
 	// General inverse (prefixed to encourage use of specific inverse).
