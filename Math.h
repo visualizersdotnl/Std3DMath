@@ -1,9 +1,14 @@
 
 /*
 	C++ math primitives for 3D rendering.
-	(c) visualizers.nl
+	(c) visualizers.nl/njdewit tech./Stockton North
 
 	Please check README.md for more information.
+
+	08/10/2026:
+	- Added Euler's number (kEuler/kExp).
+	- Added hermite spline interpolation for Vector2, Vector3, Quaternion.
+	- Misc. fixes (see Github issues and changes).
 
 	Fixed per 19/10/2018 (in Bevacqua project):
 	- Fixed issue raised by Marco Foco (see for ex. Vector3::Add()).
@@ -39,6 +44,8 @@ constexpr float k2PI = 2.f*kPI;
 constexpr float kEpsilon = FLT_EPSILON;
 // constexpr float kEpsilon = 5.96e-08f; // Max. error for single precision (32-bit).
 constexpr float kGoldenRatio = 1.61803398875f;
+constexpr float kEuler = 2.71828174591064453125f;
+constexpr float kExp = kEuler; // Natural exp.
 
 // Generic floating point random.
 // Has poor distribution due to rand() being 16-bit, so don't use it when proper distribution counts.
@@ -92,7 +99,7 @@ static inline float smoothstepf(float a, float b, float t)
 // Source: http://en.wikipedia.org/wiki/Smoothstep
 static inline float smootherstepf(float a, float b, float t)
 {
-	t = t*t*t*(t*(t * 6.f-15.f) + 10.f);
+	t = t*t*t*(t*(t*6.f - 15.f) + 10.f);
 	return lerpf<float>(a, b, t);
 }
 
@@ -102,5 +109,6 @@ static inline float smootherstepf(float a, float b, float t)
 #include "Quaternion.h"
 #include "Matrix44.h"
 #include "Intersect.h"
+#include "Hermite.h"
 
 #endif // STD_3D_MATH

@@ -1,6 +1,7 @@
 
 #pragma once
 
+// Modify/expand to fit
 #define S3D_INLINE __inline
 
 // CRT & STL:
