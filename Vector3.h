@@ -23,6 +23,8 @@ public:
 		return A.x*B.x + A.y*B.y + A.z*B.z;
 	}
 
+	// AxB != BxA
+	// Important properties: signed area between two vectors & magnitude related to sin(theta)
 	S3D_INLINE static const Vector3 Cross(const Vector3 &A, const Vector3 &B)
 	{
 		return Vector3(
