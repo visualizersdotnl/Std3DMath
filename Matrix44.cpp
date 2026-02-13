@@ -1,4 +1,8 @@
 
+/*
+	Column-major 4x4 matrix.
+*/
+
 #include "Math.h"
 
 /* static */ const Matrix44 Matrix44::Identity()
@@ -95,23 +99,9 @@
 	return Matrix44::Rotation(Quaternion::AxisAngle(axis, angle));
 }
 
-// Taken from: http://source.winehq.org/source/dlls/d3dx9_36/math.c
 /* static */ const Matrix44 Matrix44::RotationYawPitchRoll(float yaw, float pitch, float roll)
 {
-	const float sRoll = sinf(roll), cRoll = cosf(roll);
-	const float sPitch = sinf(pitch), cPitch = cosf(pitch);
-	const float sYaw = sinf(yaw), cYaw = cosf(yaw);
-
-	const float ssPitchYaw = sPitch*sYaw;
-	const float scPitchYaw = sPitch*cYaw;
-
-	// Three rotations folded into one (can probably lose another multiply or two).
-	Matrix44 matrix;
-	matrix.rows[0] = Vector4(sRoll*ssPitchYaw + cRoll*cYaw, sRoll*cPitch, sRoll*scPitchYaw - cRoll*sYaw, 0.f);
-	matrix.rows[1] = Vector4(cRoll*ssPitchYaw - sRoll*cYaw, cRoll*cPitch, cRoll*scPitchYaw + sRoll*sYaw, 0.f);
-	matrix.rows[2] = Vector4(                  cPitch*sYaw,      -sPitch,                   cPitch*cYaw, 0.f);
-	matrix.rows[3] = Vector4(                          0.f,          0.f,                           0.f, 1.f);
-	return matrix;
+	return Matrix44::Rotation(Quaternion::YawPitchRoll((yaw, pitch, roll)));
 }
 
 /* static */ const Matrix44 Matrix44::View(const Vector3 &from, const Vector3 &to, const Vector3 &up)
@@ -123,14 +113,11 @@
 	const Vector3 xAxis = (up % zAxis).Normalized();	
 	const Vector3 yAxis = zAxis % xAxis;
 
-	// Invert & rotate translation.
-	const Vector3 eye(-(xAxis*from), -(yAxis*from), -(zAxis*from));
-
 	Matrix44 matrix;
-	matrix.rows[0] = Vector4(xAxis.x, yAxis.x, zAxis.x, 0.f);
-	matrix.rows[1] = Vector4(xAxis.y, yAxis.y, zAxis.y, 0.f);
-	matrix.rows[2] = Vector4(xAxis.z, yAxis.z, zAxis.z, 0.f);
-	matrix.rows[3] = Vector4(  eye.x,   eye.y,   eye.z, 1.f);
+	matrix.rows[0] = Vector4(xAxis.x, yAxis.x, zAxis.x, -(xAxis*from));
+	matrix.rows[1] = Vector4(xAxis.y, yAxis.y, zAxis.y, -(yAxis*from));
+	matrix.rows[2] = Vector4(xAxis.z, yAxis.z, zAxis.z, -(zAxis*from));
+	matrix.rows[3] = Vector4(    0.f,     0.f,     0.f,           1.f);
 	return matrix;
 }
 
@@ -142,28 +129,30 @@
 	const float zTrans = -zNear*zFar / zRange;
 
 	Matrix44 matrix;
-	matrix.rows[0] = Vector4(xScale,    0.f,         0.f, 0.f);
-	matrix.rows[1] = Vector4(   0.f, yScale,         0.f, 0.f);
-	matrix.rows[2] = Vector4(   0.f,    0.f, zFar/zRange, 0.f);
-	matrix.rows[3] = Vector4(   0.f,    0.f,      zTrans, 0.f);
+	matrix.rows[0] = Vector4(xScale,    0.f,         0.f,    0.f);
+	matrix.rows[1] = Vector4(   0.f, yScale,         0.f,    0.f);
+	matrix.rows[2] = Vector4(   0.f,    0.f, zFar/zRange, zTrans);
+	matrix.rows[3] = Vector4(   0.f,    0.f,         1.f,    0.f);
 	return matrix;
 }
 
 /* static */ const Matrix44 Matrix44::Orthographic(const Vector2 &topLeft, const Vector2 &bottomRight, float zNear, float zFar)
 {
-	const float xScale = 2.f/(bottomRight.x-topLeft.x);
-	const float xTrans = -(bottomRight.x+topLeft.x) / (bottomRight.x-topLeft.x);
-	const float yScale = 2.f/(topLeft.y-bottomRight.y);
-	const float yTrans = -(topLeft.y+bottomRight.y) / (topLeft.y-bottomRight.y);
 	const float zRange = zFar-zNear;
+
+	const float xScale = 2.f/(bottomRight.x-topLeft.x);
+	const float yScale = 2.f/(topLeft.y-bottomRight.y);
 	const float zScale = 2.f/zRange;
+
+	const float xTrans = -(bottomRight.x+topLeft.x) / (bottomRight.x-topLeft.x);
+	const float yTrans = -(topLeft.y+bottomRight.y) / (topLeft.y-bottomRight.y);
 	const float zTrans = -(zFar+zNear)/zRange;
 
 	Matrix44 matrix;
-	matrix.rows[0] = Vector4(xScale,    0.f,    0.f, 0.f);
-	matrix.rows[1] = Vector4(   0.f, yScale,    0.f, 0.f);
-	matrix.rows[2] = Vector4(   0.f,    0.f, zScale, 0.f);
-	matrix.rows[3] = Vector4(xTrans, yTrans, zTrans, 1.f);
+	matrix.rows[0] = Vector4(xScale,    0.f,    0.f, xTrans);
+	matrix.rows[1] = Vector4(   0.f, yScale,    0.f, yTrans);
+	matrix.rows[2] = Vector4(   0.f,    0.f, zScale, zTrans);
+	matrix.rows[3] = Vector4(   0.f,    0.f,    0.f,    1.f);    
 	return matrix;
 }
 
@@ -186,30 +175,30 @@
 
 Matrix44& Matrix44::Scale(const Vector3 &scale)
 {
-	Multiply(Scaling(scale)); // FIXME: do this in-place.
+	Multiply(Scaling(scale));
 	return *this;
 }
 
 Matrix44& Matrix44::Translate(const Vector3 &translation)
 {
-	rows[3].x += translation.x;
-	rows[3].y += translation.y;
-	rows[3].z += translation.z;
+	rows[0].w += translation.x;
+	rows[1].w += translation.y;
+	rows[2].w += translation.z;
 	return *this;
 }
 
 void Matrix44::SetTranslation(const Vector3 &V)
 {
-	rows[3].x = V.x;
-	rows[3].y = V.y;
-	rows[3].z = V.z;
+	rows[0].w = V.x;
+	rows[1].w = V.y;
+	rows[2].w = V.z;
 }
 
 const Matrix44 Matrix44::Multiply(const Matrix44 &B) const
 {
 	Matrix44 matrix;
 
-	// FIXME: for the sake of readability, just roll this up.
+	// Unrolled
 	matrix.rows[0].x = rows[0].x*B.rows[0].x + rows[0].y*B.rows[1].x + rows[0].z*B.rows[2].x + rows[0].w*B.rows[3].x;
 	matrix.rows[0].y = rows[0].x*B.rows[0].y + rows[0].y*B.rows[1].y + rows[0].z*B.rows[2].y + rows[0].w*B.rows[3].y;
 	matrix.rows[0].z = rows[0].x*B.rows[0].z + rows[0].y*B.rows[1].z + rows[0].z*B.rows[2].z + rows[0].w*B.rows[3].z;
@@ -233,21 +222,23 @@ const Matrix44 Matrix44::Multiply(const Matrix44 &B) const
 const Vector3 Matrix44::Transform3(const Vector3 &B) const
 {
 	return Vector3(
-		rows[0].x*B.x + rows[1].y*B.x + rows[2].x*B.z,
-		rows[0].y*B.x + rows[1].y*B.y + rows[2].y*B.z,
-		rows[0].z*B.x + rows[1].y*B.z + rows[2].z*B.z);
+		rows[0].x*B.x + rows[0].y*B.y + rows[0].z*B.z,
+		rows[1].x*B.x + rows[1].y*B.y + rows[1].z*B.z,
+		rows[2].x*B.x + rows[2].y*B.y + rows[2].z*B.z);
 }
 
 const Vector3 Matrix44::Transform4(const Vector3 &B) const
 {
+	// To the keen observer, yes, this is a 'MADD' (multiply-add)
 	return Vector3(
-		rows[0].x*B.x + rows[1].y*B.x + rows[2].x*B.z + rows[3].x,
-		rows[0].y*B.x + rows[1].y*B.y + rows[2].y*B.z + rows[3].y,
-		rows[0].z*B.x + rows[1].y*B.z + rows[2].z*B.z + rows[3].z);
+		rows[0].x*B.x + rows[0].y*B.y + rows[0].z*B.z + rows[0].w,
+		rows[1].x*B.x + rows[1].y*B.y + rows[1].z*B.z + rows[1].w,
+		rows[2].x*B.x + rows[2].y*B.y + rows[2].z*B.z + rows[2].w);
 }
 
 const Vector4 Matrix44::Transform4(const Vector4 &B) const
 {
+	// 4 dot products
 	return Vector4(
 		rows[0]*B,
 		rows[1]*B,

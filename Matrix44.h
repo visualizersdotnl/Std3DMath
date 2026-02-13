@@ -1,18 +1,15 @@
 
 /*
-	4x4 matrix.
+	Column-major 4x4 matrix.
 
-	Uses column-major layout (translation lives in the bottom-left corner).
-	This model reflects the one used by many 3D APIs.
-	However, row-major is potentially nicer for (SIMD) CPU transform.
+	- Layout lends itself well to fast transformations (see Transform3()/Transform4()).
+	- Translation (3D) lives in last column.
+	- Ideally matrix use is restricted to storage of a (linear) transformation.
+	- Use quaternions (Quaternion) to store and manipulate rotations.
 
-	- Assumes left-handed coordinate system.
-	- Consider using Quaternion for rotations, as it saves memory & cycles.
-
-	To do:
-	- Unionize Vector4s with floats.
+	FIXME:
+	- Unionize Vector4 array with floats.
 	- Implement affine inverse.
-	- Optimize; seemingly simple operations may end up being too costly.
 */
 
 #pragma once
