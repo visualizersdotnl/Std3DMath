@@ -290,16 +290,15 @@ const Matrix44 Matrix44::AffineInverse() const
 	return GeneralInverse();
 }
 
-// FIXME: this is one of those cases that could actually benefit from general SIMD optimization (though who does a lot of general inverses, right?)
 const Matrix44 Matrix44::GeneralInverse() const
 {
 	Matrix44 matrix;
 
-	// FIXME: this is not very pretty now is it, may also cause pedantic strict aliasing warnings w/GCC
+	// FIXME: may well cause modern GCC to yell about strict aliasing (warnings)
 	const float *pSrc = reinterpret_cast<const float *>(this);
 	float *pInv = reinterpret_cast<float *>(&matrix);
 
-	// And I don't necessarily mean how this works, look that up somewhere, I haven't got this one memorized
+	// Compute inverse using adjugate (cofactor expansion) formula
 	pInv[ 0] =  pSrc[5] * pSrc[10] * pSrc[15] - pSrc[5] * pSrc[11] * pSrc[14] - pSrc[9] * pSrc[6] * pSrc[15] + pSrc[9] * pSrc[7] * pSrc[14] + pSrc[13] * pSrc[6] * pSrc[11] - pSrc[13] * pSrc[7] * pSrc[10];
 	pInv[ 4] = -pSrc[4] * pSrc[10] * pSrc[15] + pSrc[4] * pSrc[11] * pSrc[14] + pSrc[8] * pSrc[6] * pSrc[15] - pSrc[8] * pSrc[7] * pSrc[14] - pSrc[12] * pSrc[6] * pSrc[11] + pSrc[12] * pSrc[7] * pSrc[10];
 	pInv[ 8] =  pSrc[4] * pSrc[ 9] * pSrc[15] - pSrc[4] * pSrc[11] * pSrc[13] - pSrc[8] * pSrc[5] * pSrc[15] + pSrc[8] * pSrc[7] * pSrc[13] + pSrc[12] * pSrc[5] * pSrc[11] - pSrc[12] * pSrc[7] * pSrc[ 9];
@@ -317,13 +316,15 @@ const Matrix44 Matrix44::GeneralInverse() const
 	pInv[11] = -pSrc[0] * pSrc[ 5] * pSrc[11] + pSrc[0] * pSrc[ 7] * pSrc[ 9] + pSrc[4] * pSrc[1] * pSrc[11] - pSrc[4] * pSrc[3] * pSrc[ 9] - pSrc[ 8] * pSrc[1] * pSrc[ 7] + pSrc[ 8] * pSrc[3] * pSrc[ 5];
 	pInv[15] =  pSrc[0] * pSrc[ 5] * pSrc[10] - pSrc[0] * pSrc[ 6] * pSrc[ 9] - pSrc[4] * pSrc[1] * pSrc[10] + pSrc[4] * pSrc[2] * pSrc[ 9] + pSrc[ 8] * pSrc[1] * pSrc[ 6] - pSrc[ 8] * pSrc[2] * pSrc[ 5];
 	 
+	// Calculate determinant via first-row expansion
 	const float determinant = pSrc[0]*pInv[0] + pSrc[1]*pInv[4] + pSrc[2]*pInv[8] + pSrc[3]*pInv[12];
- 	if (fabsf(determinant < kEpsilon))
+ 	if (fabsf(determinant) < kEpsilon)
  	{
 		// Impossible, this matrix eliminates a dimension (FIXME: std::optional<T>?)
  		return Matrix44::Identity();
  	}
 
+	// Normalize
 	const float invDet = 1.f/determinant;
 	for (unsigned int iElem = 0; iElem < 16; ++iElem)
 		pInv[iElem] *= invDet;
