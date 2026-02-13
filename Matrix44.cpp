@@ -295,10 +295,11 @@ const Matrix44 Matrix44::GeneralInverse() const
 {
 	Matrix44 matrix;
 
-	// FIXME: this is too hacky.
+	// FIXME: this is not very pretty now is it, may also cause pedantic strict aliasing warnings w/GCC
 	const float *pSrc = reinterpret_cast<const float *>(this);
 	float *pInv = reinterpret_cast<float *>(&matrix);
 
+	// And I don't necessarily mean how this works, look that up somewhere, I haven't got this one memorized
 	pInv[ 0] =  pSrc[5] * pSrc[10] * pSrc[15] - pSrc[5] * pSrc[11] * pSrc[14] - pSrc[9] * pSrc[6] * pSrc[15] + pSrc[9] * pSrc[7] * pSrc[14] + pSrc[13] * pSrc[6] * pSrc[11] - pSrc[13] * pSrc[7] * pSrc[10];
 	pInv[ 4] = -pSrc[4] * pSrc[10] * pSrc[15] + pSrc[4] * pSrc[11] * pSrc[14] + pSrc[8] * pSrc[6] * pSrc[15] - pSrc[8] * pSrc[7] * pSrc[14] - pSrc[12] * pSrc[6] * pSrc[11] + pSrc[12] * pSrc[7] * pSrc[10];
 	pInv[ 8] =  pSrc[4] * pSrc[ 9] * pSrc[15] - pSrc[4] * pSrc[11] * pSrc[13] - pSrc[8] * pSrc[5] * pSrc[15] + pSrc[8] * pSrc[7] * pSrc[13] + pSrc[12] * pSrc[5] * pSrc[11] - pSrc[12] * pSrc[7] * pSrc[ 9];
