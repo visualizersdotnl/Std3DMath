@@ -1,6 +1,6 @@
 
 /*
-	Column-major 4x4 matrix.
+	Row-major 4x4 matrix.
 */
 
 #include "Math.h"
@@ -114,9 +114,9 @@
 	const Vector3 yAxis = zAxis % xAxis;
 
 	Matrix44 matrix;
-	matrix.rows[0] = Vector4(xAxis.x, yAxis.x, zAxis.x, -(xAxis*from));
-	matrix.rows[1] = Vector4(xAxis.y, yAxis.y, zAxis.y, -(yAxis*from));
-	matrix.rows[2] = Vector4(xAxis.z, yAxis.z, zAxis.z, -(zAxis*from));
+	matrix.rows[0] = Vector4(xAxis.x, xAxis.x, xAxis.x, -(xAxis*from));
+	matrix.rows[1] = Vector4(yAxis.y, yAxis.y, yAxis.y, -(yAxis*from));
+	matrix.rows[2] = Vector4(zAxis.z, zAxis.z, zAxis.z, -(zAxis*from));
 	matrix.rows[3] = Vector4(    0.f,     0.f,     0.f,           1.f);
 	return matrix;
 }

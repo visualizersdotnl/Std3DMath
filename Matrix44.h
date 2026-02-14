@@ -1,6 +1,6 @@
 
 /*
-	Column-major 4x4 matrix.
+	Row-major 4x4 matrix.
 
 	- Layout lends itself well to fast transformations (see Transform3()/Transform4()).
 	- Translation (3D) lives in last column.
