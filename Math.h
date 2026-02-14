@@ -5,12 +5,7 @@
 
 	Please check README.md for more information.
 
-	08/10/2026:
-	- Added Euler's number (kEuler/kExp).
-	- Added hermite spline interpolation for Vector2, Vector3, Quaternion.
-	- Misc. fixes (see Github issues and changes).
-
-	Fixed per 19/10/2018 (in Bevacqua project):
+	19/10/2018 (software rendering project):
 	- Fixed issue raised by Marco Foco (see for ex. Vector3::Add()).
 	- Added Matrix44::FromArray33().
 	- Forced 16-byte alignment for Vector4 & Vector3 (padded) by unionizing with __m128 (SSE/SIMD).
@@ -24,8 +19,13 @@
 	- Fixed clampf().
 	- Fixed lerpf(), smoothstepf() & smootherstepf().
 
+	08/10/2026:
+	- Added Euler's number (kEuler/kExp).
+	- Added hermite spline interpolation for Vector2, Vector3, Quaternion.
+	- Misc. fixes (see Github issues and changes).
+	- Working on intersection tests.
+
 	For further fixes & improvements: see Github issues.
-	- Static inline check-up?
 
 	Pay attention to:
 	- Added cast operator (const) to __m128 on Vector3/Vector4 (don't backport, or do it in a portable fashion).

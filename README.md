@@ -1,20 +1,19 @@
-# Std3DMath - Standard math for but not limited to 3D rendering (C++).
+# Std3DMath - Standard math for but not limited to 2D/3D rendering (C++).
 
-A long time ago I used to, every now and then, write a new "math library" (read: stuff you'd use for computer graphics usually).
-It is of age by now but I just patch and upgrade (or procrastinate through the issue list) as I see fit.
-
-For specific, often optimized tasks (think batch vertex processing, clipping et cetera) generic solutions tend to be impractical.
-
-Please take heed:
-- Aligned with Intel SIMD primitives for practical convenience (Vector3, Vector4).
-- Not very complete nor intended to be; I add & refactor on demand.
-- Resides in global namespace (change if necessary).
-  + Except for separate functions and such which are (to be) in the Std3DMath namespace.
-  + For brevity basic primitives remain in global namespace (for ex. Vector3).
-- All angles are in radians (unless explicitly stated otherwise).
-- Direction vectors are *assumed* unit as they should be, though I may throw in a superfluous normalization here and there.
-- Library uses standard assert() where necessary.
-- Warning: may have some _WIN32 specific SIMD dependencies.
-- When I use this in a project I usually just dump it in my '/third-party' folder instead of using a submodule.
+What it says on the tin.
+First drafted over 15 years ago.
 
 Jan/Feb 2026: I've started to flesh it out with a few more basics I've seen/needed throughout the years.
+
+It's not meant to:
+- Be overly optimized, I believe in solving heavy specific processing is best and most optimally done in place.
+- Do more than what I need it to do.
+
+Please take heed:
+- Not overly complete nor intended to be; I add & refactor on demand.
+- Aligned with Intel SIMD registers for practical convenience, making either Intel x64 or for ex. SSE2NEON.h a prerequisite (for now).
+- Resides in global namespace (change if necessary) with the exception of function groups (like intersection tests).
+- Library uses standard assert(), though not religiously so.
+- Warning: has Intel-specific header dependency (will be fixed!).
+
+I usually just copy a whatever is recent and dump it in a third party folder of a project instead of using a proper Git submodule.
