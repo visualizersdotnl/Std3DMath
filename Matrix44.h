@@ -51,16 +51,13 @@ public:
 
 	const Matrix44 Transpose() const;
 
-	// Invert orthonormal matrix (euclidian transform; may rotate, translate, reflect).
-	const Matrix44 OrthoInverse() const;
-
-	// Invert affine matrix (may also scale, shear: simply put, any matrix that disregards the orhtonormal
-	// basis: skewing, shearing, alteration of perspective.
+	// Suitable for *most* cases: this inverts the 3x3 part and rotates/inverts the translation column.
+	// Obvious outlier: a projection matrix.
 	const Matrix44 AffineInverse() const;
 
-	// General inverse (prefixed to encourage use of specific inverse).
+	// General inverse.
 	// Rule of thumb: use when bottom row isn't (0, 0, 0, 1).
-	const Matrix44 GeneralInverse() const;
+	const Matrix44 Inverse() const;
 	
 	// operator: V' = M*V
 	const Vector3 operator *(const Vector3 &B) const { return Transform4(B); }

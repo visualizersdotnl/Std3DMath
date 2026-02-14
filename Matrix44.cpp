@@ -256,7 +256,7 @@ const Matrix44 Matrix44::Transpose() const
 	return matrix;
 }
 
-const Matrix44 Matrix44::OrthoInverse() const
+const Matrix44 Matrix44::AffineInverse() const
 {
 	Matrix44 matrix;
 
@@ -275,13 +275,7 @@ const Matrix44 Matrix44::OrthoInverse() const
 	return matrix;
 }
 
-const Matrix44 Matrix44::AffineInverse() const
-{
-	// FIXME: implement constrained inverse.
-	return GeneralInverse();
-}
-
-const Matrix44 Matrix44::GeneralInverse() const
+const Matrix44 Matrix44::Inverse() const
 {
 	Matrix44 matrix;
 
