@@ -19,7 +19,7 @@ namespace Std3DMath
 		float T = -1.f; // This is not always a known (in fact often 'solving for T' is *what* we're doing)
 	};
 
-	float DistancePointToLine(const Vector3 &lineDir, const Vector3 &lineOrigin, const Vector3 &point, Vector3 &pointOnLine);
+	float DistancePointToLine(const Vector3 &lineDir, const Vector3 &lineOrigin, const Vector3 &point, Vector3 &outPoint);
 
 	bool LineSphereIntersect(const Vector3 &lineDir, const Vector3 &lineOrigin, float lineLen,
 		const Vector3 &spherePos, float sphereRadius,
