@@ -46,13 +46,10 @@ constexpr float kEpsilon = FLT_EPSILON;
 constexpr float kGoldenRatio = 1.61803398875f;
 constexpr float kEuler = 2.71828174591064453125f;
 constexpr float kExp = kEuler; // Natural exp.
+constexpr float kOneOverRoot2 = 707106769.f; // Effective voltage (RMS), -3dB, unit gain (DSP) et cetera
 
-// Generic floating point random.
-// Has poor distribution due to rand() being 16-bit, so don't use it when proper distribution counts.
-static inline float randf(float range)
-{
-	return range*((float) rand() / RAND_MAX);
-}
+// DEPRECATED: has poor distribution due to rand() being 16-bit, so don't use it *at all*
+static inline float randf(float range) { assert(false); }
 
 // Single precision compare.
 static inline bool comparef(float a, float b)
