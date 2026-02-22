@@ -5,7 +5,6 @@
 #define S3D_INLINE __inline
 
 // CRT & STL:
-#include <cfloat>    // epsilon
 #include <cmath>     // std::truncf()
 #include <assert.h>
 #include <string.h>  // memcpy()
