@@ -52,6 +52,9 @@ public:
 	explicit Vector3(float scalar) : 
 		x(scalar), y(scalar), z(scalar), padding(0.f) {}
 
+	explicit Vector3(__m128 _vSSE) :
+		vSSE(_vSSE) {}
+
 	Vector3(float x, float y, float z) :
 		x(x), y(y), z(z), padding(0.f) {}
 
