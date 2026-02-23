@@ -33,14 +33,18 @@
 		halfCosYaw*halfCosPitch*halfCosRoll + halfCosYaw*halfSinPitch*halfSinRoll));
 }
 
+/* static */ const Quaternion Quaternion::Nlerp(const Quaternion &A, const Quaternion &B, float T)
+{
+	// Nlerp is faster than Slerp, but doesn't maintain constant angular velocity and isn't as accurate (especially for large angles)
+	return lerpf<Vector4>(A, B, T).Normalized();
+}
+
 /* static */ const Quaternion Quaternion::Slerp(const Quaternion &A, const Quaternion &B, float T)
 {
 	const float dot = clampf(-1.f, 1.f, Dot(A, B)); // Clamp to acos() domain
 	if (dot > 0.9995f)
-	{
-		// Rotations are awfully close together: use linear interpolation and normalize the result to avoid precision issues
-		return lerpf<Vector4>(A, B, T).Normalized();
-	}
+		// If the quaternions are too close, use linear interpolation and normalize the result to avoid precision issues
+		return Nlerp(A, B, T); 
 
 	const float angle = acosf(dot); // Angle between A and B
 	const float theta = angle*T;    // Angle between A and result

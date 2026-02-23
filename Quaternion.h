@@ -19,7 +19,6 @@
 	  it will always be unit length.
 
 	To do (FIXME):
-	- Define angular epsilon.
 	- Hermite (see Hermite.h/Hermite.cpp) interpolation.
 
 	References:
@@ -36,7 +35,7 @@ public:
 	static const Quaternion AxisAngle(const Vector3 &axis, float angle);
 	static const Quaternion YawPitchRoll(float yaw, float pitch, float roll);
 
-	// I'm not adding NLerp() until there is (read: I have) a use case in which not to Slerp() instead
+	static const Quaternion Nlerp(const) Quaternion &from, const Quaternion &to, float T);
 	static const Quaternion Slerp(const Quaternion &from, const Quaternion &to, float T);
 
 public:
@@ -71,6 +70,18 @@ private:
 	Quaternion& operator *=(float B) { return *this = *this * B; }
 
 public:
+	float Angle() const
+	{
+		// Remember: w = cos(angle/2)
+		return acosf(w)*2.f; 
+	}
+
+	// Two quaternions are perpendicular if their vector parts are perpendicular (axis dot product is zero)
+	bool Perpendicular(const Quaternion &B) const
+	{
+		return fabsf(x*B.x + y*B.y + z*B.z) < kEpsilon;
+	}
+
 	const Quaternion Normalized() const
 	{
 		return Vector4::Normalized();
