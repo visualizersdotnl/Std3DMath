@@ -35,7 +35,7 @@ public:
 	static const Quaternion AxisAngle(const Vector3 &axis, float angle);
 	static const Quaternion YawPitchRoll(float yaw, float pitch, float roll);
 
-	static const Quaternion Nlerp(const) Quaternion &from, const Quaternion &to, float T);
+	static const Quaternion Nlerp(const Quaternion &from, const Quaternion &to, float T);
 	static const Quaternion Slerp(const Quaternion &from, const Quaternion &to, float T);
 
 public:
