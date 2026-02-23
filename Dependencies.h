@@ -12,5 +12,5 @@
 #include <algorithm> // std::min(), std::max()
 #include <float.h>   // FLT_EPSILON
 
-// Firstly to align Vector3/Vector4, and enable SIMD on some of these primitives.
+// Some primitives have a SIMD register (FIXME: solve properly for SSE, NEON et cetera)
 #include <xmmintrin.h>
