@@ -118,9 +118,9 @@ public:
 	// Can be used to for ex. calculate rotational difference between A and B (= A.Inverse()*B)
 	const Quaternion Inverse() const 
 	{
-		const float normSq = x*x + y*y + z*z + w*w; // Keep sign (no LengthSq())
+		const float normSq = x*x + y*y + z*z + w*w;
 
-		if (fabsf(normSq) < kEpsilon)
+		if (normSq < kEpsilon)
 			return Identity();
 		
 
