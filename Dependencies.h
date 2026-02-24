@@ -1,7 +1,9 @@
 
 #pragma once
 
-// Modify/expand to fit
+// Use this one if you want to manhandle functions flagged as 'fit for inlining' to actually *be* inlined
+// What's best to do here depends, my first suggestion would be to analyse generated code
+// A modern optimzing C++ compiler will make pretty good judgement calls if given the right incentive(s)
 #define S3D_INLINE __inline
 
 // CRT & STL:

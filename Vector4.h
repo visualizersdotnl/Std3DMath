@@ -92,14 +92,14 @@ public:
 		return sqrtf(LengthSq());
 	}
 	
-	const Vector4 Normalized() const
+	S3D_INLINE const Vector4 Normalized() const
 	{
 		auto result = *this;
 		result.Normalize();
 		return result;
 	}
 
-	void Normalize()
+	S3D_INLINE void Normalize()
 	{
 		const float length = Length();
 		if (length > kEpsilon)
@@ -108,7 +108,7 @@ public:
 		}
 	}
 
-	const Vector4 Multiplied(const Vector4 &B) const
+	S3D_INLINE const Vector4 Multiplied(const Vector4 &B) const
 	{
 		return Mul(*this, B);
 	}

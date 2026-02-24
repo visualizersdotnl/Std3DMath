@@ -82,14 +82,14 @@ public:
 		return sqrtf(Dot(*this, *this));
 	}
 	
-	const Vector2 Normalized() const
+	S3D_INLINE const Vector2 Normalized() const
 	{
 		auto result = *this;
 		result.Normalize();
 		return result;
 	}
 
-	void Normalize()
+	S3D_INLINE void Normalize()
 	{
 		const float length = Length();
 		if (length > kEpsilon)
@@ -110,7 +110,7 @@ public:
 		return unitB * Dot(*this, unitB);
 	}
 
-	const Vector2 Reflect(const Vector2 &normal) const
+	S3D_INLINE const Vector2 Reflect(const Vector2 &normal) const
 	{
 		const float R = 2.f*Dot(*this, normal);
 		return *this - normal*R;

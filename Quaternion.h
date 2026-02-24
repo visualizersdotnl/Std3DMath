@@ -51,11 +51,11 @@ public:
 	// Performs the inverse of Log()
 	static const Quaternion Exp(const Vector3 &vector, float epsilon = kAngleEpsilon*kAngleEpsilon); 
 
-	static const Vector3 ScaledAngleAxis(const Quaternion &quaternion) { 
+	S3D_INLINE static const Vector3 ScaledAngleAxis(const Quaternion &quaternion) { 
 		return Log(quaternion)*2.f; // Compensate for half-angle
 	}
 
-	static const Quaternion ScaledAngleAxis(const Vector3 &vector) { 
+	S3D_INLINE static const Quaternion ScaledAngleAxis(const Vector3 &vector) { 
 		return Exp(vector*0.5f); // Compensate for full angle
 	}
 
@@ -91,7 +91,7 @@ private:
 	Quaternion& operator *=(float B) { return *this = *this * B; }
 
 public:
-	float Angle() const
+	S3D_INLINE float Angle() const
 	{
 		// Remember: w = cos(angle/2)
 		const float clampedW = clampf(-1.f, 1.f, w); // Clamp to acos() domain (avoid NaN)
@@ -99,18 +99,18 @@ public:
 	}
 
 	// Two quaternions are perpendicular if their vector parts are perpendicular (axis dot product is zero)
-	bool Perpendicular(const Quaternion &B) const
+	S3D_INLINE bool Perpendicular(const Quaternion &B) const
 	{
 		return fabsf(x*B.x + y*B.y + z*B.z) < kEpsilon;
 	}
 
-	const Quaternion Normalized() const
+	S3D_INLINE const Quaternion Normalized() const
 	{
 		return Vector4::Normalized();
 	}
 
 	// The conjugate *is* the inverse of a unit quaternion
-	const Quaternion Conjugate() const
+	S3D_INLINE const Quaternion Conjugate() const
 	{
 		return Quaternion(Vector4(-x, -y, -z, w));
 	}
@@ -129,13 +129,13 @@ public:
 	}
 
 	// Force rotation to one side of the hemisphere
-	const Quaternion Abs() const
+	S3D_INLINE const Quaternion Abs() const
 	{
 		return (w >= 0.f)
 			? *this 
 			: *this * -1.f; // Flip components
 	}
 
-	const Quaternion Nlerp(const Quaternion &to, float T) const { return Nlerp(*this, to, T); }
-	const Quaternion Slerp(const Quaternion &to, float T) const { return Slerp(*this, to, T); }
+	S3D_INLINE const Quaternion Nlerp(const Quaternion &to, float T) const { return Nlerp(*this, to, T); }
+	S3D_INLINE const Quaternion Slerp(const Quaternion &to, float T) const { return Slerp(*this, to, T); }
 };
