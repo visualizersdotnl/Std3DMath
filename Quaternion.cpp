@@ -33,11 +33,15 @@
 		halfCosYaw*halfCosPitch*halfCosRoll + halfCosYaw*halfSinPitch*halfSinRoll));
 }
 
-/* static */ const Quaternion Quaternion::Nlerp(const Quaternion &A, const Quaternion &B, float T)
+/*
+
+static const Quaternion Quaternion::Nlerp(const Quaternion &A, const Quaternion &B, float T)
 {
 	// Nlerp is faster than Slerp, but doesn't maintain constant angular velocity and isn't as accurate (especially for large angles)
 	return lerpf<Vector4>(A, B, T).Normalized();
 }
+
+*/
 
 /* static */ const Quaternion Quaternion::Slerp(const Quaternion &A, const Quaternion &B, float T)
 {

@@ -26,6 +26,7 @@
  
 #pragma once
 
+#include "Dependencies.h"
 #include "Math.h"
 
 class Quaternion : public Vector4
@@ -36,7 +37,10 @@ public:
 	static const Quaternion YawPitchRoll(float yaw, float pitch, float roll);
 
 	// Fast but non-linear velocity and less accurate (especially for large angles)
-	static const Quaternion Nlerp(const Quaternion &from, const Quaternion &to, float T);
+	// Works pretty well and fast for successive small rotations
+	S3D_INLINE static const Quaternion Nlerp(const Quaternion &from, const Quaternion &to, float T) {
+		return lerpf<Vector4>(A, B, T).Normalized();
+	}
 
 	// Spherical linear interpolation: constant angular velocity and more accurate, but more expensive (and not commutative!)
 	static const Quaternion Slerp(const Quaternion &from, const Quaternion &to, float T);

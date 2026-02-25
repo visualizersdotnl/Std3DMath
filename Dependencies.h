@@ -13,6 +13,7 @@
 #include <math.h>    // sinf(), cosf(), et cetera
 #include <algorithm> // std::min(), std::max()
 #include <float.h>   // FLT_EPSILON
+#include <array>
 
 // Some primitives have a SIMD register (FIXME: solve properly for SSE, NEON et cetera)
 #include <xmmintrin.h>

@@ -1,6 +1,6 @@
 
 /*
-	4D (homogenous) vector.
+	4D vector.
 */
 
 #pragma once

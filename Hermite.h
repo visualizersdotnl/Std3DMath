@@ -2,20 +2,41 @@
 /*
     Hermite spline functions.
 
-    Hermite splines are a variation on Bezier splines:
-    - They use and always pass through 2 control points (each with a corresponding direction or tangent, if you will), whereas
-      in bezier splines the 4 control points more or less act like attractors.
-    - Their mathematical basis is more or less identical (Bernstein polynomials).
- 
-    Two excellent resources on the matter:
-    - Youtube video on Quadratric/Cubic Bezier splines by Freya Holmér: https://youtu.be/aVwxzDHniEw
+    The Hermite (or Catmull-Rom to be specific) spline has enough continuity and the operations can be expressed as a result of just
+    a set of 2 control points, that are gauranteed to be passed through.
+
+    These are excellent for camera paths, animation and the likes.
+    Be careful with geometry generation (normal generation et al; Freya's video explains it in detail).
+
+    Two excellent resources on this (and much more):
+    - Youtube video on splines by Freya Holmér: https://youtu.be/jvPPXbo87ds
     - The Orange Duck on implementing these for use with unit quaternions: https://theorangeduck.com/page/cubic-interpolation-quaternions
 */
 
 #pragma once
 
-#include "Dependencies.h"
 namespace Std3DMath
 {
-    // To do: implement for Vector2, Vector3, Quaternion
+    // Hermite_Pos() and Hermite_Vel() evaluate the basis functions for T (Bernstein polynomials)
+    S3D_INLINE static const std::array<float, 4> Hermite_Pos(float T)
+    {
+        return {
+             0.f, 
+             0.f, 
+             0.f, 
+             0.f };
+    }
+
+    // First derivative: velocity (tangent vector)
+    S3D_INLINE static const std::array<float, 4> Hermite_Vel(float T)
+    {
+        return {
+             0.f, 
+             0.f, 
+             0.f, 
+             0.f };
+    }
+
+    // To do:
+    // - Catmull/Hermite for Vec2/Vec3/Quat
 }
