@@ -38,12 +38,12 @@ public:
 
 	// Fast but non-linear velocity and less accurate (especially for large angles)
 	// Works pretty well and fast for successive small rotations
-	S3D_INLINE static const Quaternion Nlerp(const Quaternion &from, const Quaternion &to, float T) {
-		return lerpf<Vector4>(A, B, T).Normalized();
+	S3D_INLINE static const Quaternion Nlerp(const Quaternion &from, const Quaternion &to, float t) {
+		return lerpf<Vector4>(from, to, t).Normalized();
 	}
 
 	// Spherical linear interpolation: constant angular velocity and more accurate, but more expensive (and not commutative!)
-	static const Quaternion Slerp(const Quaternion &from, const Quaternion &to, float T);
+	static const Quaternion Slerp(const Quaternion &from, const Quaternion &to, float t);
 
 	// For Log() and Exp():
 	// When for ex. integrating *small* rotations the epsilon can be relaxed a lot to make these functions faster by effectively just
@@ -87,12 +87,15 @@ public:
 
 private: 
 	// These remain private (for now) as they serve to alter magnitude
-	const Quaternion operator *(float B) const 
+	const Quaternion operator *(float b) const 
 	{ 
-		return Vector4::Mul(*this, Vector4(B)); 
+		return Scale(*this, b);
 	}
 
-	Quaternion& operator *=(float B) { return *this = *this * B; }
+	Quaternion& operator *=(float b) 
+	{ 
+		return *this = *this * b; 
+	}
 
 public:
 	S3D_INLINE float Angle() const
@@ -140,6 +143,6 @@ public:
 			: *this * -1.f; // Flip components
 	}
 
-	S3D_INLINE const Quaternion Nlerp(const Quaternion &to, float T) const { return Nlerp(*this, to, T); }
-	S3D_INLINE const Quaternion Slerp(const Quaternion &to, float T) const { return Slerp(*this, to, T); }
+	S3D_INLINE const Quaternion Nlerp(const Quaternion &to, float t) const { return Nlerp(*this, to, t); }
+	S3D_INLINE const Quaternion Slerp(const Quaternion &to, float t) const { return Slerp(*this, to, t); }
 };

@@ -14,6 +14,7 @@
 #include <algorithm> // std::min(), std::max()
 #include <float.h>   // FLT_EPSILON
 #include <array>
+#include <tuple>
 
 // Some primitives have a SIMD register (FIXME: solve properly for SSE, NEON et cetera)
 #include <xmmintrin.h>
