@@ -12,26 +12,27 @@
 
 namespace Std3DMath
 {
-	// FIXME: flesh out further
 	struct Ray 
 	{
 		Vector3 origin;
 		Vector3 direction;
+
 		float t = -1.f; 
+
+		[[nodiscard]] constexpr operator bool() const noexcept 
+		{
+			return false == std::bit_cast<unsigned>(-1.f) == std::bit_cast<unsigned>(t);
+		}	
 	};
 
-	// FIXME: what is the wisest thing to do here, or rather, modern C++ way, instead of having 2 closely related structures *or* naive inheritance?
-	struct Line 
-	{
-
-	};
-
+	// FIXME: this is a ray, idiot
 	float DistancePointToLine(const Vector3 &lineDir, const Vector3 &lineOrigin, const Vector3 &point, Vector3 &outPoint);
 
+	// FIXME: same
 	bool LineSphereIntersect(const Vector3 &lineDir, const Vector3 &lineOrigin, float lineLen,
 		const Vector3 &spherePos, float sphereRadius,
 		float &outT);
 
-	// FIXME: you can see that my need here to feed it a non-const ray more or less suggests something dirty is going on here!
+	// FIXME: figure out proper return type
 	bool RayTriangleIntersect(/* const */ Ray &ray, const Vector3 &V0, const Vector3 &V1, const Vector3 &V2, bool doubleSided);
 }
