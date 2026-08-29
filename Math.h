@@ -70,6 +70,13 @@ static inline float smootherstepf(float a, float b, float t)
 	return lerpf<float>(a, b, t);
 }
 
+// Use with caution (serves to avoid FTOL, not necessarily always quicker than a floating point comparison)
+static inline bool ispositivef(float x)
+{
+	const unsigned signBit = std::bit_cast<uint32_t>(x) >> 31;
+	return 0 == signBit;	
+}
+
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"

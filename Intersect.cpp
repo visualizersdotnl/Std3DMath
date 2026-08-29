@@ -8,7 +8,7 @@
 
 namespace Std3DMath
 {
-	float DistancePointToLine(const Vector3 &lineDir, const Vector3 &lineOrigin, const Vector3 &point, Vector3 &outPoint)
+	float DistancePointToLine(const Vector3 &lineDir, const Vector3 &lineOrigin, const Vector3 point, Vector3 &outPoint)
 	{
 		const Vector3 toLine = point - lineOrigin;
 		const Vector3 projected = toLine.Project(lineDir); // Will normalize lineDir, which I'd rather assert on top since the name infers it
@@ -20,7 +20,18 @@ namespace Std3DMath
 		return (toLine-projected).Length();
 	}
 
-	bool LineSphereIntersect(const Vector3 &lineDir, const Vector3 &lineOrigin, float lineLen,
+	const std::tuple<float, const Vector3> DistancePointToRay(const Ray &ray, const Vector3 point)
+	{
+		const Vector3 toLine = point - ray.origin;
+		const Vector3 projected = toLine.Project(ray.direction); // Will normalize ray dir., which I'd rather assert on top since the name infers it
+
+		return { 
+			(toLine-projected).Length(),
+			ray.origin+projected
+		};
+	}
+
+	bool LineSphereIntersect_(const Vector3 &lineDir, const Vector3 &lineOrigin, float lineLen,
 		const Vector3 &spherePos, float sphereRadius,
 		float &outT)
 	{
@@ -45,6 +56,18 @@ namespace Std3DMath
 		outT = projLen-offset;
 
 		return true;
+	}
+
+	// FIXME: take impl. from LineSphereInterrsect_() and deprecate it
+	const std::tuple<bool, float> LineSphereIntersect(const Line &line, const Vector3 &spherePos, float sphereRadius)
+	{
+		float t = -1.f;
+		const bool hit = LineSphereIntersect_(line.direction, line.origin, line.t, spherePos, sphereRadius, t);
+
+		return { 
+			hit, 
+			t 
+		};
 	}
 
 	// Using Möller–Trumbore algorithm (see https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf)
