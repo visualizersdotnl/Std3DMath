@@ -3,7 +3,7 @@
 	Intersection test functions.
 
 	FIXME:
-	- Add 'vector from poin on line to closest point to other line'.
+	- Add 'vector from point on line to closest point to other line'.
 	- Add 'is point in triangle' (using half-space (barycentric) check).
 	- Add ray-AABB.
 */
