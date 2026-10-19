@@ -21,7 +21,7 @@ namespace Std3DMath
 	// FIXME: could overload, return boolean and number in a tuple, but there's such a thing as 'too much'
 	constexpr float kNoIntersect = -1.f;
 
-	float DistancePointToRay(const Vector3 &rat, const Vector3 point, Vector3 &outPoint);
+	float DistancePointToRay(const Ray &ray, const Vector3 point, Vector3 &outPoint);
 	
 	S3D_INLINE const std::tuple<float, const Vector3> DistancePointToRay(const Ray &ray, const Vector3 point)
 	{
@@ -37,12 +37,12 @@ namespace Std3DMath
 		const Vector3 &spherePos, float sphereRadius,
 		float &outT);
 
-	S3D_INLINE const std::tuple<bool, float> LineSphereIntersect(const Line &line, const Vector3 &spherePos, float sphereRadius)
+	S3D_INLINE const std::tuple<bool, float> LineSphereIntersect(const Ray &lineOrig, float lineLen, const Vector3 &spherePos, float sphereRadius)
 	{
 		float t = kNoIntersect;
 
 		return { 
-			LineSphereIntersect(line.direction, line.origin, line.t, spherePos, sphereRadius, t),
+			LineSphereIntersect(lineOrig.direction, lineOrig.origin, lineLen, spherePos, sphereRadius, t),
 			t 
 		};
 	}
